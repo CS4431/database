@@ -1,6 +1,9 @@
 require 'sinatra/base'
 
 class Routes < Sinatra::Base
+  # Make server publicly accessible
+  set :bind, '0.0.0.0'
+
   before do
     @extensions = ['json', 'xml']
   end
