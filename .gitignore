@@ -1,5 +1,6 @@
 *.gem
 *.rbc
+*.swp
 /.config
 /coverage/
 /InstalledFiles
@@ -14,6 +15,7 @@
 /_yardoc/
 /doc/
 /rdoc/
+/src/public/doc
 
 ## Environment normalisation:
 /.bundle/
