@@ -1,5 +1,6 @@
 require 'sinatra/base'
-require 'sqlite3'
+require './db_handler'
+require './serializer'
 
 class Routes < Sinatra::Base
   # Make server publicly accessible
@@ -37,15 +38,14 @@ class Routes < Sinatra::Base
     "ISBN: #{isbn}, Extension: #{ext}"
   end
 
-  get '/api/book/:id' do |id|
-    db = SQLite3::Database.open("db/books.sqlite")
-    query = "SELECT title, isbn FROM books WHERE _id=" + id.to_s
-    row = db.get_first_row(query)
-    if row == nil
-      return "No book found with id:" + id.to_s
-    end
-
-    return "Title: " + row[0] + "<br>ISBN: " + row[1].to_s
+  # @method get_book_by_id
+  # @overload get "/api/book/*.*"
+  # @param id [Integer] book id, under 10 digits
+  # @param extension [String] return format, JSON or XML
+  # Returns Book data by given id in specified format 
+  get %r{/api/book/(\d{1,10})\.(\w+)} do |id, ext|
+    data = DBHandler.get_book_by_id(id)
+    Serializer.serialize("book", data, ext)
   end
 
   # Since we are subclassing Sinatra, we need to start Sinatra if being run directly
