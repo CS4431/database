@@ -16,10 +16,8 @@ class Routes < Sinatra::Base
   # @overload get "/"
   # Returns the documentation if you have a top-level request
   get '/' do
-    if File.exist?("public/doc/Routes.html")
-      send_file "public/doc/Routes.html"
-    else
-      return "Generate the yard documentation with \"yard doc\""
+    if File.exist?("public/doc/index.html")
+      redirect to('doc/index.html')
     end
   end
 
