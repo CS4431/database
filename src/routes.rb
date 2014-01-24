@@ -9,8 +9,6 @@ class Routes < Sinatra::Base
   @extensions = Serializer::EXTENSIONS
 
   before do
-    puts '[Params]'
-    p params
     DBHandler.establish_connection
   end
 
