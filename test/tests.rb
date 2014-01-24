@@ -22,4 +22,17 @@ class TestAPI < Test::Unit::TestCase
 
   	assert_equal(res.code.to_i, 200)
 	end
+
+  def test_login
+    # Create user first
+    params = {"email" => "foo@lakeheadu.ca", "password" => "foo", "ext" => "json"}
+    uri = URI("http://localhost:4567/api/create/user")
+    res = Net::HTTP.post_form(uri, params)
+
+    params = {"email" => "foo@lakeheadu.ca", "password" => "foo", "ext" => "json"}
+    uri = URI("http://localhost:4567/api/login")
+    res = Net::HTTP.post_form(uri, params)
+
+    assert_equal(res.code.to_i, 200)
+  end
 end

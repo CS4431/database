@@ -23,7 +23,7 @@ class Routes < Sinatra::Base
 
   # @method get_documentation
   # @overload get "/"
-  # Returns the documentation if you have a top-level request
+  # Returns the documentation if your have a top-level request
   get '/' do
     index = File.expand_path('doc/index.html', settings.public_folder)
     if File.exist?(index)
@@ -31,6 +31,31 @@ class Routes < Sinatra::Base
     else
       "YARD Docs not generated! Please contact the server administrators."
     end
+  end
+
+  # @method login
+  # @overload post "/api/login"
+  # @param email [String] email of user
+  # @param password [String] unhashed password
+  # Returns an access token of the user if login succeeded, null if failed
+  post "/api/login" do
+    parameters = clean_extension(params)
+    parameters = Serializer.parse_json_parameters(parameters["json"]) if parameters.has_key? "json"
+
+    # Remove captures, type and splat from outgoing hash
+    parameters.delete("captures")
+    parameters.delete("type")
+    parameters.delete("splat")
+
+    email = parameters["email"]
+    password = parameters["password"]
+
+    tok = DBHandler.generate_access_token(email) if(DBHandler.login(email, password))
+
+    token_hash = {"token" => tok}
+    data_hash = {"token" => token_hash}
+
+    Serializer.serialize(data_hash, @@ext)
   end
 
   # @method select_from_database

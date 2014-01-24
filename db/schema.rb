@@ -9,7 +9,7 @@ module Schema
       drop_table :buy
       drop_table :contact
       drop_table :course
-      drop_table :course_book 
+      drop_table :course_book
       drop_table :department
       drop_table :edition
       drop_table :edition_group
@@ -18,7 +18,7 @@ module Schema
       drop_table :verification
     end
   end
-  
+
   # Creates the database tables based on the defined schema
   def Schema.create_db
     ActiveRecord::Schema.define do
@@ -87,6 +87,13 @@ module Schema
         t.string :code, null: false
         t.integer :user_id, null: false
         t.datetime :end_date, null: false
+      end
+
+      create_table :token do |t|
+        t.string :email, null: false
+        t.datetime :start_date, null: false
+        t.datetime :end_date, null: false
+        t.string :token, null: false
       end
     end
   end
