@@ -13,8 +13,9 @@ module DBHandler
 
     # get column information (index 1 is column name)
     columns = db.execute("PRAGMA table_info(books)")
-    
-    column_names = columns.select { |col| col[1] }
+    column_names = []
+    columns.each { |col| column_names << col[1] }
+
     Hash[column_names.zip(row)]
   end
 
