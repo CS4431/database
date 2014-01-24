@@ -95,6 +95,9 @@ class Routes < Sinatra::Base
     when "sell"
       sells = DBHandler.create_sell(parameters)
       data_hash = {"sell" => sells}
+    when "user"
+      user = DBHandler.create_user(parameters)
+      data_hash = {"user" => user}
     else
       halt "Invalid data type requested."
     end
@@ -105,7 +108,7 @@ class Routes < Sinatra::Base
   # @method verify
   # @param code [String] code to verify account
   # Returns a message saying if the verification was successful or not
-  get '/verify/:code' do
+  get '/api/verify/:code' do
     result = DBHandler.verify_user(params[:code])
     if result == true
       return "Verification successful"

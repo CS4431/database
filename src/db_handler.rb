@@ -152,9 +152,10 @@ module DBHandler
     user.pass = hash["password"]
     user.save
     
-    verification = Verification.generate_code(user.id)
-    MailHandler.send_verification(user.email, verification.code)
+    #verification = Verification.generate_code(user.id)
+    #MailHandler.send_verification(user.email, verification.code)
 
+    # Why does users get passed backs as an array???? -David
     users_array = [user.to_hash]
   end
 
@@ -188,7 +189,7 @@ module DBHandler
   # @return [Bool] true if login information is correct; false otherwise
   def DBHandler.login(email, password)
     user = User.find_by(email: email)
-    return false if user.nil?
+    nil if user.nil?
     user.login(password)
   end
 
