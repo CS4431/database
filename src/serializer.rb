@@ -1,6 +1,8 @@
 require 'json'
 
 module Serializer
+  EXTENSIONS = ["json", "xml"]
+
   # Serialized data into the correct format
   #
   # @param kind [String] what data you're serializing (book, user, etc.)
