@@ -7,7 +7,7 @@ class Routes < Sinatra::Base
   set :bind, '0.0.0.0'
 
   before do
-    @extensions = ['json', 'xml']
+    @extensions = Serializer::EXTENSIONS
   end
 
   # Routes
@@ -18,6 +18,8 @@ class Routes < Sinatra::Base
   get '/' do
     if File.exist?("public/doc/index.html")
       redirect to('doc/index.html')
+    else
+      "YARD Docs not generated! Please contact the server administrators."
     end
   end
 
