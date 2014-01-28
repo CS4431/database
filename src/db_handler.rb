@@ -7,14 +7,10 @@ module DBHandler
   # @return [Hash] the book data; nil if no book found
   def DBHandler.get_book_by_id(id)
     db = SQLite3::Database.open("db/books.sqlite")
-    query = "SELECT * FROM books WHERE _id = #{id}"
+    column_names = ["id", "isbn", "book_id", "author", "edition", "publisher", "cover", "image", "title"]
+    query = "SELECT edition.*, book.title FROM edition, book WHERE edition.id = #{id} AND book.id = edition.book_id"
     row = db.get_first_row(query)
     return nil if row == nil
-
-    # get column information (index 1 is column name)
-    columns = db.execute("PRAGMA table_info(books)")
-    column_names = []
-    columns.each { |col| column_names << col[1] }
 
     Hash[column_names.zip(row)]
   end
