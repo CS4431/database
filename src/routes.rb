@@ -24,48 +24,40 @@ class Routes < Sinatra::Base
     end
   end
 
-  # @method get_book_by_ISBN
-  # @overload get "/api/book/*.*"
-  # @param isbn [Fixnum] book ISBN, 10 or 13 digits
+  # @method get_book
+  # @overload get "/api/book?[key]=[value]&[key2]=[value2]..."
+  # @param get-params [Hash] get parameters to search books by
   # @param extension [String] return format, JSON or XML
-  # Returns Book data by given 10-digit or 13-digit ISBN in specified format
-  get %r{/api/book/(\d{10,})\.(\w+)} do |isbn, ext|
-    ext.downcase!
+  # Returns Book data searched by given get parameters
+  get "/api/book" do
+    ext = params["ext"]
+    params.delete("ext")
 
-    # Sanitize API call
-    halt 400, "Your ISBN is malformed." unless isbn.length == 10 or isbn.length == 13
-    halt 400, "Bad extension" unless @extensions.include? ext
-
-    "ISBN: #{isbn}, Extension: #{ext}"
-  end
-
-  # @method get_book_by_id
-  # @overload get "/api/book/*.*"
-  # @param id [Integer] book id, under 10 digits
-  # @param extension [String] return format, JSON or XML
-  # Returns Book data by given id in specified format 
-  get %r{/api/book/(\d{1,10})\.(\w+)} do |id, ext|
-    data = DBHandler.get_book("id" => id)
+    data = DBHandler.get_book(params)
     Serializer.serialize("book", data, ext)
   end
 
-  # @method get_department_by_id
-  # @overload get "/api/department/*.*"
-  # @param id [Integer] department id, under 10 digits
-  # @param extension [String] return format, JSON or XML
-  # Returns Department data by given id in specified format 
-  get %r{/api/department/(\d{1,10})\.(\w+)} do |id, ext|
-    data = DBHandler.get_department("id" => id)
+  # @method get_department
+  # @overload get "/api/department?[key]=[value]&[key2]=[value2]..."
+  # @param (see #get_book)
+  # Returns Department data searched by given get parameters
+  get "/api/department" do
+    ext = params["ext"]
+    params.delete("ext")
+
+    data = DBHandler.get_department(params)
     Serializer.serialize("department", data, ext)
   end
 
-  # @method get_course_by_id
-  # @overload get "/api/course/*.*"
-  # @param id [Integer] course id, under 10 digits
-  # @param extension [String] return format, JSON or XML
+  # @method get_course
+  # @overload get "/api/department?[key]=[value]&[key2]=[value2]..."
+  # @param (see #get_book)
   # Returns Course data by given id in specified format 
-  get %r{/api/course/(\d{1,10})\.(\w+)} do |id, ext|
-    data = DBHandler.get_course("id" => id)
+  get "/api/course" do
+    ext = params["ext"]
+    params.delete("ext")
+
+    data = DBHandler.get_course(params)
     Serializer.serialize("course", data, ext)
   end
 
