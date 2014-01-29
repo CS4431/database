@@ -48,5 +48,19 @@ module DBHandler
     return nil if course == nil
     course.to_hash
   end
+  
+  # Creates a user and salts and hashes the password
+  #
+  # @param email [String] the user's email
+  # @param password [String] the user's plaintext password
+  # @return [Integer] the created user's account id
+  def DBHandler.create_user(email, password)
+    user = User.new
+    user.email = email
+    user.pass = password
+    user.save
+    #TODO Send email to user for verification
+    user.id
+  end
 
 end
