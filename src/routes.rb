@@ -45,7 +45,7 @@ class Routes < Sinatra::Base
   # @param extension [String] return format, JSON or XML
   # Returns Book data by given id in specified format 
   get %r{/api/book/(\d{1,10})\.(\w+)} do |id, ext|
-    data = DBHandler.get_book_by_id(id)
+    data = DBHandler.get_book("id" => id)
     Serializer.serialize("book", data, ext)
   end
 
@@ -55,7 +55,7 @@ class Routes < Sinatra::Base
   # @param extension [String] return format, JSON or XML
   # Returns Department data by given id in specified format 
   get %r{/api/department/(\d{1,10})\.(\w+)} do |id, ext|
-    data = DBHandler.get_department_by_id(id)
+    data = DBHandler.get_department("id" => id)
     Serializer.serialize("department", data, ext)
   end
 
@@ -65,7 +65,7 @@ class Routes < Sinatra::Base
   # @param extension [String] return format, JSON or XML
   # Returns Course data by given id in specified format 
   get %r{/api/course/(\d{1,10})\.(\w+)} do |id, ext|
-    data = DBHandler.get_course_by_id(id)
+    data = DBHandler.get_course("id" => id)
     Serializer.serialize("course", data, ext)
   end
 
