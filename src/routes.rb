@@ -8,6 +8,7 @@ class Routes < Sinatra::Base
 
   before do
     @extensions = Serializer::EXTENSIONS
+    DBHandler.establish_connection
   end
 
   # Routes
@@ -46,6 +47,26 @@ class Routes < Sinatra::Base
   get %r{/api/book/(\d{1,10})\.(\w+)} do |id, ext|
     data = DBHandler.get_book_by_id(id)
     Serializer.serialize("book", data, ext)
+  end
+
+  # @method get_department_by_id
+  # @overload get "/api/department/*.*"
+  # @param id [Integer] department id, under 10 digits
+  # @param extension [String] return format, JSON or XML
+  # Returns Department data by given id in specified format 
+  get %r{/api/department/(\d{1,10})\.(\w+)} do |id, ext|
+    data = DBHandler.get_department_by_id(id)
+    Serializer.serialize("department", data, ext)
+  end
+
+  # @method get_course_by_id
+  # @overload get "/api/course/*.*"
+  # @param id [Integer] course id, under 10 digits
+  # @param extension [String] return format, JSON or XML
+  # Returns Course data by given id in specified format 
+  get %r{/api/course/(\d{1,10})\.(\w+)} do |id, ext|
+    data = DBHandler.get_course_by_id(id)
+    Serializer.serialize("course", data, ext)
   end
 
   # Since we are subclassing Sinatra, we need to start Sinatra if being run directly
