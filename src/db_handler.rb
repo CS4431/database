@@ -1,4 +1,6 @@
 require 'sqlite3'
+require 'active_record'
+require './department'
 
 module DBHandler
   # Gets book data for specified book id
@@ -15,4 +17,9 @@ module DBHandler
     Hash[column_names.zip(row)]
   end
 
+  def DBHandler.get_department(id)
+    ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/books.sqlite')
+    department = Department.first
+    department.to_hash
+  end
 end
