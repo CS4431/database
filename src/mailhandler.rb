@@ -22,7 +22,7 @@ module MailHandler
   # @param code [String] verification code to send
   def MailHandler.send_verification(email, code)
     body = "To verify you account please follow this link: http://107.170.7.58/verify/#{code}"
-    MailHandler.send(email, "Account Verification", => body)
+    MailHandler.send(email, "Account Verification" => body)
   end
 
 end

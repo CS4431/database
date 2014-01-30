@@ -84,4 +84,15 @@ module DBHandler
     verification.destroy
     return true
   end
+
+  # Checks if user login information is correct
+  #
+  # @param email [String] user's email
+  # @param password [String] password user is attempting to login with
+  # @return [Bool] true if login information is correct; false otherwise
+  def DBHandler.login(email, password)
+    user = User.find_by(email: email)
+    return false if user.nil?
+    user.login(password)
+  end
 end
