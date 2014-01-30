@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require './db_handler'
 require './serializer'
+require 'mail'
 
 class Routes < Sinatra::Base
   # Make server publicly accessible
@@ -59,6 +60,18 @@ class Routes < Sinatra::Base
 
     data = DBHandler.get_course(params)
     Serializer.serialize("course", data, ext)
+  end
+
+  # @method verify
+  # @param code [String] code to verify account
+  # Returns a message saying if the verification was successful or not
+  get '/verify/:code' do
+    result = DBHandler.verify_user(params[:code])
+    if result == true
+      return "Verification successful"
+    else
+      return "Error validating account"
+    end
   end
 
   # Since we are subclassing Sinatra, we need to start Sinatra if being run directly

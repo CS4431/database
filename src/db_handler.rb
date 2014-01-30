@@ -8,6 +8,7 @@ require './course_book'
 require './department'
 require './edition'
 require './user'
+require './verification'
 
 module DBHandler
   
@@ -59,8 +60,28 @@ module DBHandler
     user.email = email
     user.pass = password
     user.save
-    #TODO Send email to user for verification
-    user.id
+    
+    verification = Verification.new
+    verification.code = Verification.generate_code
+    verification.user_id = user.id
+    verification.save
+
+    MailHandler.send_verification(user.email, verification.code)
+
+    return user.id
   end
 
+  # Verifies a user account
+  #
+  # @param code [String] verification code
+  # @return [Bool] true if verification successful
+  def DBHandler.verify_user(code)
+    verification = Verification.find_by(code: code)
+    return false if verification.nil?
+    user = User.find_by(id: verification.user_id)
+    user.verified = true
+    user.save
+    verification.destroy
+    return true
+  end
 end
