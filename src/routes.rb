@@ -12,6 +12,16 @@ class Routes < Sinatra::Base
     DBHandler.establish_connection
   end
 
+  # Checks for existence of the ext get parameter and assigns it to a class variable
+  # @param p [Hash] the parameters hash
+  # Returns the parameters hash without the ext parameter
+  def clean_extension(p)
+    halt "ext = nil, extension parameter not passed." unless p.key?("ext")
+    @@ext = p["ext"]
+    p.delete("ext")
+    return p
+  end
+
   # Routes
 
   # @method get_documentation
@@ -31,8 +41,7 @@ class Routes < Sinatra::Base
   # @param extension [String] return format, JSON or XML
   # Returns Book data searched by given get parameters
   get "/api/book" do
-    ext = params["ext"]
-    params.delete("ext")
+    parameters = clean_extension(params)
 
     data = DBHandler.get_book(params)
     Serializer.serialize("book", data, ext)
@@ -43,23 +52,21 @@ class Routes < Sinatra::Base
   # @param (see #get_book)
   # Returns Department data searched by given get parameters
   get "/api/department" do
-    ext = params["ext"]
-    params.delete("ext")
+    parameters = clean_extension(params)
 
-    data = DBHandler.get_department(params)
-    Serializer.serialize("department", data, ext)
+    data = DBHandler.get_department(parameters)
+    Serializer.serialize("department", data, @@ext)
   end
 
   # @method get_course
-  # @overload get "/api/department?[key]=[value]&[key2]=[value2]..."
+  # @overload get "/api/course?[key]=[value]&[key2]=[value2]..."
   # @param (see #get_book)
   # Returns Course data by given id in specified format 
   get "/api/course" do
-    ext = params["ext"]
-    params.delete("ext")
+    parameters = clean_extension(params)
 
-    data = DBHandler.get_course(params)
-    Serializer.serialize("course", data, ext)
+    data = DBHandler.get_course(parameters)
+    Serializer.serialize("course", data, @@ext)
   end
 
   # @method verify
