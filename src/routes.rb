@@ -5,10 +5,20 @@ require './serializer'
 class Routes < Sinatra::Base
   # Make server publicly accessible
   set :bind, '0.0.0.0'
+  @extensions = Serializer::EXTENSIONS
 
   before do
-    @extensions = Serializer::EXTENSIONS
     DBHandler.establish_connection
+  end
+
+  # Checks for existence of the ext get parameter and assigns it to a class variable
+  # @param p [Hash] the parameters hash
+  # Returns the parameters hash without the ext parameter
+  def clean_extension(p)
+    halt "ext = nil, extension parameter not passed." unless p.key?("ext")
+    @@ext = p["ext"]
+    p.delete("ext")
+    return p
   end
 
   # Routes
@@ -24,41 +34,33 @@ class Routes < Sinatra::Base
     end
   end
 
-  # @method get_book
-  # @overload get "/api/book?[key]=[value]&[key2]=[value2]..."
-  # @param get-params [Hash] get parameters to search books by
-  # @param extension [String] return format, JSON or XML
-  # Returns Book data searched by given get parameters
-  get "/api/book" do
-    ext = params["ext"]
-    params.delete("ext")
+  # @method select_from_database
+  # @overload get "/api/:type?foo=bar&foo2=bar2..."
+  # @param type [String] The type of record being fetched
+  # @param get-params [Hash] A & delimeted list, prepended by ?, with all the search parameters
+  # Returns the record you're searching for or returns empty hash in JSON/XML
+  # @note Ensure you pass ext=<serialized type> in get parameters to specify your return format!
+  get "/api/:type" do
+    type = params[:type]
+    parameters = clean_extension(params)
 
-    data = DBHandler.get_book(params)
-    Serializer.serialize("book", data, ext)
-  end
+    # Remove captures, type and splat from outgoing hash
+    parameters.delete("captures")
+    parameters.delete("type")
+    parameters.delete("splat")
 
-  # @method get_department
-  # @overload get "/api/department?[key]=[value]&[key2]=[value2]..."
-  # @param (see #get_book)
-  # Returns Department data searched by given get parameters
-  get "/api/department" do
-    ext = params["ext"]
-    params.delete("ext")
+    case type
+    when "book"
+      data = DBHandler.get_book(parameters)
+    when "department"
+      data = DBHandler.get_department(parameters)
+    when "course"
+      data = DBHandler.get_course(parameters)
+    else
+      halt "Invalid type of data requested."
+    end
 
-    data = DBHandler.get_department(params)
-    Serializer.serialize("department", data, ext)
-  end
-
-  # @method get_course
-  # @overload get "/api/department?[key]=[value]&[key2]=[value2]..."
-  # @param (see #get_book)
-  # Returns Course data by given id in specified format 
-  get "/api/course" do
-    ext = params["ext"]
-    params.delete("ext")
-
-    data = DBHandler.get_course(params)
-    Serializer.serialize("course", data, ext)
+    Serializer.serialize(type, data, @@ext)
   end
 
   # @method verify
