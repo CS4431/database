@@ -3,8 +3,6 @@ require './db_handler'
 require './serializer'
 
 class Routes < Sinatra::Base
-  # Make server publicly accessible
-  set :bind, '0.0.0.0'
   @extensions = Serializer::EXTENSIONS
 
   before do
@@ -76,5 +74,5 @@ class Routes < Sinatra::Base
   end
 
   # Since we are subclassing Sinatra, we need to start Sinatra if being run directly
-  run! if app_file = $0
+  run! if app_file == $0
 end
