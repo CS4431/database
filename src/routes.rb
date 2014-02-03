@@ -3,6 +3,7 @@ require './db_handler'
 require './serializer'
 
 class Routes < Sinatra::Base
+  set :public_folder, '../public'
   @extensions = Serializer::EXTENSIONS
 
   before do
@@ -25,7 +26,7 @@ class Routes < Sinatra::Base
   # @overload get "/"
   # Returns the documentation if you have a top-level request
   get '/' do
-    if File.exist?("public/doc/index.html")
+    if File.exist?("../public/doc/index.html")
       redirect to('doc/index.html')
     else
       "YARD Docs not generated! Please contact the server administrators."
