@@ -1,7 +1,6 @@
 require 'sinatra/base'
 require './db_handler'
 require './serializer'
-require 'mail'
 
 class Routes < Sinatra::Base
   # Make server publicly accessible
