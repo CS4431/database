@@ -55,8 +55,35 @@ class Routes < Sinatra::Base
       data = DBHandler.get_department(parameters)
     when "course"
       data = DBHandler.get_course(parameters)
+    when "sell"
+      data = DBHandler.get_sell(parameters)
     else
       halt "Invalid type of data requested."
+    end
+
+    Serializer.serialize(type, data, @@ext)
+  end
+
+  # @method add_to_database
+  # @overload post "/api/create/:type"
+  # @param type [String] the type of record being added
+  # @param post-params [Hash] the POST parameters passed with the HTTP request, gets passed as Hash to database
+  # Returns the record you added to the database as your selected extension
+  # @note MAKE SURE YOU PASS AN "ext" PARAMETER. This is required to serialize the output of your request.
+  post "/api/create/:type" do
+    type = params[:type]
+    parameters = clean_extension(params)
+
+    # Remove captures, type and splat from outgoing hash
+    parameters.delete("captures")
+    parameters.delete("type")
+    parameters.delete("splat")
+
+    case type
+    when "sell"
+      data = DBHandler.create_sell(parameters)
+    else
+      halt "Invalid data type requested."
     end
 
     Serializer.serialize(type, data, @@ext)

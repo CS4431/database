@@ -9,6 +9,7 @@ require './department'
 require './edition'
 require './user'
 require './verification'
+require './sell'
 
 module DBHandler
   
@@ -20,10 +21,10 @@ module DBHandler
   # Gets book data as a hash
   #
   # @param hash [Hash] the book data to search for
-  # @return [Hash] the book data; nil if no book found
+  # @return [Hash] the book data; empty hash if no book found
   def DBHandler.get_book(hash = {})
     edition = Edition.find_by(hash)
-    return nil if edition == nil
+    {} if edition.nil?
     book = Book.find_by(id: edition.book_id)
     hash = edition.to_hash
     hash["title"] = book.title
@@ -33,10 +34,10 @@ module DBHandler
   # Gets department data as a hash
   #
   # @param hash [Hash] the department data to search for
-  # @return [Hash] the department data; nil if no department found
+  # @return [Hash] the department data; empty hash if no department found
   def DBHandler.get_department(hash = {})
     department = Department.find_by(hash)
-    return nil if department == nil
+    {} if course.nil?
     department.to_hash
   end
 
@@ -52,11 +53,21 @@ module DBHandler
   # Gets course data as a hash
   #
   # @param hash [Hash] the course data to search for
-  # @return [Hash] the course data; nil if no department found
+  # @return [Hash] the course data; empty hash if no department found
   def DBHandler.get_course(hash = {})
     course = Course.find_by(hash)
-    return nil if course == nil
+    {} if course.nil?
     course.to_hash
+  end
+
+  # Gets sell data as a hash
+  #
+  # @param hash [Hash] the sell data to search for
+  # @return [Hash] the sell data; empty hash if no sell found
+  def DBHandler.get_sell(hash = {})
+    sell = Sell.find_by(hash)
+    {} if sell.nil?
+    sell.to_hash
   end
   
   # Creates a user and salts and hashes the password
@@ -78,6 +89,15 @@ module DBHandler
     MailHandler.send_verification(user.email, verification.code)
 
     return user.id
+  end
+
+  # Creates a sell request record in the database
+  #
+  # @param hash [Hash] the sell data to add to the database
+  # @return [Hash] the sell data added
+  def DBHandler.create_sell(hash)
+    sell = Sell.create(hash)
+    return sell.to_hash
   end
 
   # Verifies a user account
