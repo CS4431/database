@@ -40,6 +40,15 @@ module DBHandler
     department.to_hash
   end
 
+  # Create a department
+  #
+  # @param hash [Hash] the department data to add to database
+  # @return [Hash] the department data added;
+  def DBHandler.create_department(hash = {})
+    department = Department.create(hash)
+    department.to_hash
+  end
+
   # Gets course data as a hash
   #
   # @param hash [Hash] the course data to search for
