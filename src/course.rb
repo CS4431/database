@@ -1,3 +1,4 @@
+#Handles course database table
 class Course < ActiveRecord::Base
   self.table_name = "course"
 

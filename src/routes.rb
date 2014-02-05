@@ -2,6 +2,7 @@ require 'sinatra/base'
 require './db_handler'
 require './serializer'
 
+# Handles all url pattern matching and sends the requested data back to the user. Main entry point of the application.
 class Routes < Sinatra::Base
   set :public_folder, '../public'
   @extensions = Serializer::EXTENSIONS

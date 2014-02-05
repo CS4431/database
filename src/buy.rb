@@ -1,3 +1,4 @@
+# Handles buy database table
 class Buy < ActiveRecord::Base
   self.table_name = "buy"
 

@@ -11,6 +11,7 @@ require './user'
 require './verification'
 require './sell'
 
+# Handles all database connections
 module DBHandler
   
   # Establishes a connection with the database
