@@ -1,5 +1,6 @@
 require 'securerandom'
 
+# Handles verification database table
 class Verification < ActiveRecord::Base
   self.table_name = "verification"
 

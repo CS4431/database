@@ -1,3 +1,4 @@
+# Handels course_book database table
 class CourseBook < ActiveRecord::Base
   self.table_name = "course_book"
 

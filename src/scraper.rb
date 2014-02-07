@@ -2,6 +2,7 @@ require 'nokogiri'
 require 'open-uri'
 require 'logger.rb'
 
+# Handles all web scraping
 module Scraper
   # Logs a message to scrape.log on scraping failure
   # @param error [String] the error message

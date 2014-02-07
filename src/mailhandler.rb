@@ -1,5 +1,6 @@
 require 'mail'
 
+# Handles all email transmissions
 module MailHandler
 
   # Sends an email from notifications

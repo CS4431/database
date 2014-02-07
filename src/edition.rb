@@ -1,3 +1,4 @@
+# Handles edition database table
 class Edition < ActiveRecord::Base
   self.table_name = "edition"
   

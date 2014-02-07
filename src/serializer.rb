@@ -1,6 +1,8 @@
 require 'json'
 
+# Converts database results into text formats
 module Serializer
+  # valid file types to serialize
   EXTENSIONS = ["json", "xml"]
 
   # Serialized data into the correct format
@@ -19,11 +21,19 @@ module Serializer
     end
   end
 
+  # Serialized data into valid xml
+  #
+  # @param hash [Hash] the data to be serialized
+  # @return [String] serialized xml data
   def Serializer.to_xml(hash)
     result = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
     result << Serializer.val_to_xml(hash).force_encoding("UTF-8")
   end
 
+  # Serialize a hash into xml
+  #
+  # @param hash [Hash] the data to be serialized
+  # @return [String] hash data as xml
   def Serializer.val_to_xml(hash)
     result = ""
     hash.each do |k,v|

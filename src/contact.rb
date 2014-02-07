@@ -1,3 +1,4 @@
+# Handles contact database table
 class Contact < ActiveRecord::Base
   self.table_name = "contact"
 

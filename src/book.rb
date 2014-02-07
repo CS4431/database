@@ -1,3 +1,4 @@
+# Handles book database table
 class Book < ActiveRecord::Base
   self.table_name = "book"
 

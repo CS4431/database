@@ -1,3 +1,4 @@
+# Handles department database table
 class Department < ActiveRecord::Base
   self.table_name = "department"
 

@@ -1,5 +1,6 @@
 require 'bcrypt'
 
+# Handles user database table
 class User < ActiveRecord::Base
   include BCrypt
   self.table_name = "user"
