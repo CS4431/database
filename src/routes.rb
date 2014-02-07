@@ -1,6 +1,6 @@
 require 'sinatra/base'
-require './db_handler'
-require './serializer'
+require_relative './db_handler'
+require_relative './serializer'
 
 class Routes < Sinatra::Base
   set :public_folder, '../public'

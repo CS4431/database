@@ -1,14 +1,14 @@
 require 'sqlite3'
 require 'active_record'
-require './book'
-require './buy'
-require './contact'
-require './course'
-require './course_book'
-require './department'
-require './edition'
-require './user'
-require './verification'
+require_relative './book'
+require_relative './buy'
+require_relative './contact'
+require_relative './course'
+require_relative './course_book'
+require_relative './department'
+require_relative './edition'
+require_relative './user'
+require_relative './verification'
 
 module DBHandler
   

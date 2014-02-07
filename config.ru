@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'sinatra'
 require 'rack'
-require './routes.rb'
+require './src/routes.rb'
 
 set :root, Pathname(__FILE__).dirname
 set :env, :production
