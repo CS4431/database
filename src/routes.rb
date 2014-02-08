@@ -4,9 +4,8 @@ require_relative './serializer'
 
 # Handles all url pattern matching and sends the requested data back to the user. Main entry point of the application.
 class Routes < Sinatra::Base
-  set :public_folder, '../public'
   @extensions = Serializer::EXTENSIONS
-
+  
   before do
     DBHandler.establish_connection
   end
@@ -27,7 +26,9 @@ class Routes < Sinatra::Base
   # @overload get "/"
   # Returns the documentation if you have a top-level request
   get '/' do
-    if File.exist?("../public/doc/index.html")
+    index = File.expand_path('doc/index.html', settings.public_folder)
+    #return index
+    if File.exist?(index)
       redirect to('doc/index.html')
     else
       "YARD Docs not generated! Please contact the server administrators."
@@ -103,5 +104,13 @@ class Routes < Sinatra::Base
   end
 
   # Since we are subclassing Sinatra, we need to start Sinatra if being run directly
-  run! if app_file == $0
+  if app_file == $0
+    set :root, Pathname.new(Pathname(__FILE__).dirname + '/../')
+    set :public_folder, '../public'
+    run!
+  else
+    set :root, Pathname.new(Pathname(__FILE__).dirname + './')
+    set :public_folder, './public'
+  end
+  #run! if app_file == $0
 end
