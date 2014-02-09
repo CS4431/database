@@ -27,7 +27,6 @@ class Routes < Sinatra::Base
   # Returns the documentation if you have a top-level request
   get '/' do
     index = File.expand_path('doc/index.html', settings.public_folder)
-    #return index
     if File.exist?(index)
       redirect to('doc/index.html')
     else
