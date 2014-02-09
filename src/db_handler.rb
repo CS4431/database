@@ -41,11 +41,13 @@ module DBHandler
     department.to_hash
   end
 
-  # Create a department
+  # Create a department unless department already exists.
   #
-  # @param hash [Hash] the department data to add to database
+  # @param hash [Hash] the department data to add to database. If department already exists return existing data.
   # @return [Hash] the department data added;
   def DBHandler.create_department(hash = {})
+    department = Department.find_by(hash)
+    return department.to_hash unless department.nil?
     department = Department.create(hash)
     department.to_hash
   end
