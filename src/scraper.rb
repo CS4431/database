@@ -54,4 +54,58 @@ module Scraper
       nil
     end
   end
+
+  # Parses all courses in a program
+  #
+  # @param (see #get_all_timetables)
+  def Scraper.get_all_courses(url)
+    begin
+      page = Nokogiri::HTML(open(url))
+      td = page.css('td')
+      td = td.select { |x| x.text != "" }
+
+      courses = []
+      course_hash = Hash.new
+      looking_for = 0
+      td.each do |line|
+        case looking_for
+        when 0
+          # look for course code
+          if /[A-Z]{4}-[0-9]{4}-[A-Z]{2}/.match(line.text)
+            #puts line.text
+            course_hash["code"] = line.text
+            looking_for += 1
+          end
+        when 1
+          # course name is the line after course code, no need to search
+          #puts line.text
+          course_hash["title"] = line.text
+          looking_for += 1
+        when 2
+          # look for instructor
+          if /Instructor: [.]*/.match(line.text)
+            #puts line.text
+            course_hash["instructor"] = line.text
+            looking_for += 1
+          end
+        when 3
+          # look for books link
+          if /BOOKS[.]*/.match(line.text)
+            link = line.child['href']
+            # remove \n from links
+            link.gsub!("\n", "")
+            puts link
+            course_hash["books_link"] = link
+            courses << course_hash
+            course_hash = Hash.new
+            looking_for = 0
+          end
+        end 
+      end
+    rescue
+      self.log("get_all_courses failed.")
+      nil
+    end
+  end
+
 end
