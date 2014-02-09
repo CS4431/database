@@ -1,6 +1,7 @@
 require 'nokogiri'
 require 'open-uri'
 require 'logger.rb'
+require_relative './db_handler'
 
 # Handles all web scraping
 module Scraper
@@ -34,13 +35,20 @@ module Scraper
       page = Nokogiri::HTML(open(url))
 
       base_url = /(.+\/)/.match(url)[1]
-
       copy_li = page.css('div#copy li')
       child_links = copy_li.collect { |a| a.child }
-      child_links_href = child_links.collect { |a| a['href'] }
+     
+      # get program code, name, id and link
+      program_info = []
+      child_links.each do |link|
+        program_hash = { "code" => link['href'].upcase[0,4], 
+                         "name" => link.text }
+        program = DBHandler.create_department(program_hash)
+        program_hash["id"] = program["id"]
+        program_hash["link"] = base_url + link['href']
+        program_info << program_hash
+      end 
 
-      # append the root URL to the relative HTML files
-      child_links_href.map { |a| base_url + a }
     rescue
       self.log("get_all_programs failed.")
       nil
