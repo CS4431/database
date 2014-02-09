@@ -57,8 +57,10 @@ module Scraper
 
   # Parses all courses in a program
   #
-  # @param (see #get_all_timetables)
-  def Scraper.get_all_courses(url)
+  # @param url [String] url of page to parse
+  # @param program_id [int] department id for the course page
+  # @param term [String] the term this course is in
+  def Scraper.get_all_courses(url, program_id, term)
     begin
       page = Nokogiri::HTML(open(url))
       td = page.css('td')
@@ -85,7 +87,7 @@ module Scraper
           # look for instructor
           if /Instructor: [.]*/.match(line.text)
             #puts line.text
-            course_hash["instructor"] = line.text
+            course_hash["instructor"] = line.text.gsub("Instructor: ", "")
             looking_for += 1
           end
         when 3
@@ -102,6 +104,19 @@ module Scraper
           end
         end 
       end
+
+      # add courses to database and get course books
+      courses.each do |course|
+        data = {"title" => course["title"],
+                "code" => course["code"][0,9],
+                "section" => course["code"][10,13],
+                "department_id" => program_id,
+                "instructor" => course["instructor"],
+                "term" => term + course["code"][10] }
+        db_data = DBHandler.create_course(data)
+        Scraper.get_all_books(course["books_link"], db_data["id"]) 
+      end
+
     rescue
       self.log("get_all_courses failed.")
       nil
@@ -110,8 +125,9 @@ module Scraper
 
   # Parses all books in a course
   #
-  # @param (see #get_all_timetables)
-  def Scraper.get_all_books(url)
+  # @param url [String] url of page to parse
+  # @param course_id [int] id of the course the book page belongs to
+  def Scraper.get_all_books(url, course_id)
     page = Nokogiri::HTML(open(url))
     book_titles = page.css('em')
     text = page.to_s
@@ -176,6 +192,12 @@ module Scraper
         end
       end
     end
+
+    # add books to database
+    editions.each do |edition|
+      DBHandler.create_book(edition)
+    end
+
   end
 
 end

@@ -30,6 +30,15 @@ module DBHandler
     hash["title"] = book.title
     hash
   end
+
+  def DBHandler.create_book(hash = {})
+    book = Book.find_by({"title" => hash["title"]})
+    book = Book.create({"title" => hash["title"]}) if book.nil?
+    hash.delete("title")
+    hash["book_id"] = book["id"]
+    edition = Edition.create(hash)
+    edition.to_hash
+  end
   
   # Gets department data as a hash
   #
@@ -59,6 +68,17 @@ module DBHandler
   def DBHandler.get_course(hash = {})
     course = Course.find_by(hash)
     {} if course.nil?
+    course.to_hash
+  end
+
+  # Creats a course unless course already exists
+  #
+  # @param hash [Hash] the course data to add to database
+  # @return [Hash] the course data added
+  def DBHandler.create_course(hash = {})
+    course = Course.find_by(hash)
+    return course.to_hash unless course.nil?
+    course = Course.create(hash)
     course.to_hash
   end
 
