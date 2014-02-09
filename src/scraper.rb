@@ -33,6 +33,7 @@ module Scraper
   def Scraper.get_all_programs(url)
     begin
       page = Nokogiri::HTML(open(url))
+      year = page.css("b").text[2,2]
 
       base_url = /(.+\/)/.match(url)[1]
       copy_li = page.css('div#copy li')
@@ -47,7 +48,11 @@ module Scraper
         program_hash["id"] = program["id"]
         program_hash["link"] = base_url + link['href']
         program_info << program_hash
-      end 
+      end
+
+      program_info.each do |program|
+        Scraper.get_all_courses(program["link"], program["id"], year)
+      end
 
     rescue
       self.log("get_all_programs failed.")
@@ -56,7 +61,6 @@ module Scraper
   end
 
   # Parses all courses in a program
-  #
   # @param url [String] url of page to parse
   # @param program_id [int] department id for the course page
   # @param term [String] the term this course is in
@@ -81,7 +85,7 @@ module Scraper
         when 1
           # course name is the line after course code, no need to search
           #puts line.text
-          course_hash["title"] = line.text
+          course_hash["title"] = line.text.gsub("\n", "")
           looking_for += 1
         when 2
           # look for instructor
@@ -109,7 +113,7 @@ module Scraper
       courses.each do |course|
         data = {"title" => course["title"],
                 "code" => course["code"][0,9],
-                "section" => course["code"][10,13],
+                "section" => course["code"][10,2],
                 "department_id" => program_id,
                 "instructor" => course["instructor"],
                 "term" => term + course["code"][10] }
@@ -124,80 +128,68 @@ module Scraper
   end
 
   # Parses all books in a course
-  #
   # @param url [String] url of page to parse
   # @param course_id [int] id of the course the book page belongs to
   def Scraper.get_all_books(url, course_id)
-    page = Nokogiri::HTML(open(url))
-    book_titles = page.css('em')
-    text = page.to_s
+    begin
+      page = Nokogiri::HTML(open(url))
+      book_titles = page.css('em')
+      text = page.to_s
 
-    img_url_base = "http://lakehead.bookware3000.ca/eSolution_config/partimg/large/"
+      img_url_base = "http://lakehead.bookware3000.ca/eSolution_config/partimg/large/"
 
-    editions = []
-    edition_hash = Hash.new
-    book_titles.each do |title|
-      # remove all text before book title
-      text = text.split(title)[1]
-      lines = text.split(/<br>|\n/)
-      looking_for = :isbn
-      lines.each do |line|
+      editions = []
+      edition_hash = Hash.new
+      book_titles.each do |title|
+        # remove all text before book title
+        text = text.split(title)[1]
+        lines = text.split(/<br>|\n/)
+        lines.each do |line|
 
-        case looking_for
-        when :isbn
-          # look for isbn
-          if /ISBN: [0-9]*/.match(line)
-            edition_hash["title"] = title.text
-            isbn = line.gsub("ISBN: ", "")
-            isbn = isbn.gsub("&nbsp;", "").strip
-            edition_hash["isbn"] = isbn
-            edition_hash["image"] = img_url_base + isbn + ".jpg"
-            looking_for = :author
-          end
-        when :author
-          # look for author
-          if /Author: [.]*/.match(line)
-            author = line.gsub("Author: ", "")
-            author = author.gsub("&nbsp;", "").strip
-            edition_hash["author"] = author
-            looking_for = :publisher
-          end
-        when :publisher
-          # look for publisher
-          if /Publisher: [.]*/.match(line)
-            publisher = line.gsub("Publisher: ", "")
-            publisher = publisher.gsub("&nbsp;", "").strip
-            edition_hash["publisher"] = publisher
-            looking_for = :edition
-          end
-        when :edition
-          # look for edition
-          if /Edition: [.]*/.match(line)
-            edition = line.gsub("Edition: ", "")
-            edition = edition.gsub("&nbsp;", "").strip
-            edition_hash["edition"] = edition
-            looking_for = :cover
-          end
-        when :cover
-          # look for cover
-          if /Cover: [.]*/.match(line)
-            cover = line.gsub("Cover: ", "")
-            cover = cover.gsub("&nbsp;", "").strip
-            edition_hash["cover"] = cover
-
-            editions << edition_hash
-            edition_hash = Hash.new
-            break
-          end
+        if /ISBN: [0-9]*/.match(line)
+          edition_hash["title"] = title.text
+          isbn = line.gsub("ISBN: ", "")
+          isbn = isbn.gsub("&nbsp;", "").strip
+          edition_hash["isbn"] = isbn
+          edition_hash["image"] = img_url_base + isbn + ".jpg"
+          looking_for = :author
+        elsif /Author: [.]*/.match(line)
+          author = line.gsub("Author: ", "")
+          author = author.gsub("&nbsp;", "").strip
+          edition_hash["author"] = author
+          looking_for = :publisher
+        elsif /Publisher: [.]*/.match(line)
+          publisher = line.gsub("Publisher: ", "")
+          publisher = publisher.gsub("&nbsp;", "").strip
+          edition_hash["publisher"] = publisher
+          looking_for = :edition
+        elsif /Edition: [.]*/.match(line)
+          edition = line.gsub("Edition: ", "")
+          edition = edition.gsub("&nbsp;", "").strip
+          edition_hash["edition"] = edition
+          looking_for = :cover
+        elsif /Cover: [.]*/.match(line)
+          cover = line.gsub("Cover: ", "")
+          cover = cover.gsub("&nbsp;", "").strip
+          edition_hash["cover"] = cover
         end
+
+        end
+        # add edition to list
+        editions << edition_hash
+        edition_hash = Hash.new
       end
-    end
 
-    # add books to database
-    editions.each do |edition|
-      DBHandler.create_book(edition)
+      # add books to database
+      editions.each do |edition|
+        db_edition = DBHandler.create_book(edition)
+        DBHandler.create_course_book({"course_id" => course_id,
+                                     "edition_id" => db_edition["id"]})
+      end
+    rescue
+      self.log("get_all_books failed.")
+     nil 
     end
-
   end
 
 end

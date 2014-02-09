@@ -31,15 +31,32 @@ module DBHandler
     hash
   end
 
+  # Creates a book and edition
+  #
+  # @param hash [Hash] the book data to add
+  # @return [Hash] the edition added to database
   def DBHandler.create_book(hash = {})
     book = Book.find_by({"title" => hash["title"]})
     book = Book.create({"title" => hash["title"]}) if book.nil?
     hash.delete("title")
     hash["book_id"] = book["id"]
+    edition = Edition.find_by(hash)
+    return edition.to_hash unless edition.nil?
     edition = Edition.create(hash)
     edition.to_hash
   end
-  
+
+  # Creates an association betwwen a book and a course
+  #
+  # @param hash [Hash] the association data
+  # @return [Hash] the added data
+  def DBHandler.create_course_book(hash = {})
+    course_book = CourseBook.find_by(hash)
+    return course_book unless course_book.nil?
+    course_book = CourseBook.create(hash)
+    course_book.to_hash
+  end
+
   # Gets department data as a hash
   #
   # @param hash [Hash] the department data to search for
