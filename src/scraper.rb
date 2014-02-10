@@ -133,51 +133,50 @@ module Scraper
   def Scraper.get_all_books(url, course_id)
     begin
       page = Nokogiri::HTML(open(url))
-      book_titles = page.css('em')
+      book_titles = []
+      page.css('em').each { |title| book_titles << title.text }
       text = page.to_s
 
       img_url_base = "http://lakehead.bookware3000.ca/eSolution_config/partimg/large/"
 
+      book_groups = text.split("ISBN: ")
+
       editions = []
-      edition_hash = Hash.new
-      book_titles.each do |title|
+      book_titles.each_index do |title_index|
+        edition_hash = Hash.new
+        title = book_titles[title_index]
+
         # remove all text before book title
-        text = text.split(title)[1]
-        lines = text.split(/<br>|\n/)
+        split_text = book_groups[title_index + 1]
+        lines = split_text.split(/<br>|\n/)
+
+        # isbn is the first line
+        isbn = lines[0]
+        edition_hash["isbn"] = isbn
+        edition_hash["title"] = title
+        edition_hash["image"] = img_url_base + isbn + ".jpg"
+
         lines.each do |line|
-
-        if /ISBN: [0-9]*/.match(line)
-          edition_hash["title"] = title.text
-          isbn = line.gsub("ISBN: ", "")
-          isbn = isbn.gsub("&nbsp;", "").strip
-          edition_hash["isbn"] = isbn
-          edition_hash["image"] = img_url_base + isbn + ".jpg"
-          looking_for = :author
-        elsif /Author: [.]*/.match(line)
-          author = line.gsub("Author: ", "")
-          author = author.gsub("&nbsp;", "").strip
-          edition_hash["author"] = author
-          looking_for = :publisher
-        elsif /Publisher: [.]*/.match(line)
-          publisher = line.gsub("Publisher: ", "")
-          publisher = publisher.gsub("&nbsp;", "").strip
-          edition_hash["publisher"] = publisher
-          looking_for = :edition
-        elsif /Edition: [.]*/.match(line)
-          edition = line.gsub("Edition: ", "")
-          edition = edition.gsub("&nbsp;", "").strip
-          edition_hash["edition"] = edition
-          looking_for = :cover
-        elsif /Cover: [.]*/.match(line)
-          cover = line.gsub("Cover: ", "")
-          cover = cover.gsub("&nbsp;", "").strip
-          edition_hash["cover"] = cover
-        end
-
+          if /Author: [.]*/.match(line)
+            author = line.gsub("Author: ", "")
+            author = author.gsub("&nbsp;", "").strip
+            edition_hash["author"] = author
+          elsif /Publisher: [.]*/.match(line)
+            publisher = line.gsub("Publisher: ", "")
+            publisher = publisher.gsub("&nbsp;", "").strip
+            edition_hash["publisher"] = publisher
+          elsif /Edition: [.]*/.match(line)
+            edition = line.gsub("Edition: ", "")
+            edition = edition.gsub("&nbsp;", "").strip
+            edition_hash["edition"] = edition
+          elsif /Cover: [.]*/.match(line)
+            cover = line.gsub("Cover: ", "")
+            cover = cover.gsub("&nbsp;", "").strip
+            edition_hash["cover"] = cover
+          end
         end
         # add edition to list
         editions << edition_hash
-        edition_hash = Hash.new
       end
 
       # add books to database
@@ -188,7 +187,7 @@ module Scraper
       end
     rescue
       self.log("get_all_books failed.")
-     nil 
+      nil 
     end
   end
 
