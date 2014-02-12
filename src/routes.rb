@@ -40,7 +40,7 @@ class Routes < Sinatra::Base
   # @param get-params [Hash] A & delimeted list, prepended by ?, with all the search parameters
   # Returns the record you're searching for or returns empty hash in JSON/XML
   # @note Ensure you pass ext=<serialized type> in get parameters to specify your return format!
-  get "/api/:type" do
+  post "/api/:type" do
     type = params[:type]
     parameters = clean_extension(params)
 
