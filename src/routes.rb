@@ -14,7 +14,8 @@ class Routes < Sinatra::Base
   # @param p [Hash] the parameters hash
   # Returns the parameters hash without the ext parameter
   def clean_extension(p)
-    halt "ext = nil, extension parameter not passed." unless p.key?("ext")
+    @@ext = "json" 
+    return p unless p.key?("ext")
     @@ext = p["ext"]
     p.delete("ext")
     return p
