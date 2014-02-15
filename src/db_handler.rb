@@ -31,6 +31,18 @@ module DBHandler
     hash
   end
 
+  # Gets many books as a hash
+  #
+  # @param hash [Hash] the book data to search for
+  # @param count [Integer] how many books to return
+  # @param offset [Integer] how many books to offset the search results by
+  # @return [Hash] the book data, empty hash if no books found
+  def DBHandler.get_many_books(hash = {}, count, offset)
+    editions = Edition.select("edition.*, book.*").joins(:book).where(hash).limit(count).offset(offset).references(:edition, :book)
+    {} if editions.nil?
+    editions_array = editions.to_a.map(&:serializable_hash)
+  end
+
   # Creates a book and edition
   #
   # @param hash [Hash] the book data to add

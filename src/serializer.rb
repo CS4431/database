@@ -11,13 +11,30 @@ module Serializer
   # @param data [Hash] the data you want serialized
   # @param ext [String] format extension
   def Serializer.serialize(kind, data, ext)
-    hash = { "kind" => kind, "data" => data }
-    case ext
-    when "json"
-      return JSON hash
-    when "xml"
-      hash = {kind => data}
-      return Serializer.to_xml hash
+    if data.kind_of?(Array)
+      # Serialize an array of hashes
+      hash_array = []
+      data.each do |item|
+        hash_array << { "kind" => kind, "data" => item }
+      end
+
+      case ext
+      when "json"
+        return JSON hash_array
+      when "xml"
+        return Serializer.to_xml hash_array
+      end
+
+    else
+      # Serialize a single hash
+      hash = { "kind" => kind, "data" => data }
+      case ext
+      when "json"
+        return JSON hash
+      when "xml"
+        hash = {kind => data}
+        return Serializer.to_xml hash
+      end
     end
   end
 

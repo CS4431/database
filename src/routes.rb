@@ -48,18 +48,36 @@ class Routes < Sinatra::Base
     parameters.delete("captures")
     parameters.delete("type")
     parameters.delete("splat")
-
-    case type
-    when "book"
-      data = DBHandler.get_book(parameters)
-    when "department"
-      data = DBHandler.get_department(parameters)
-    when "course"
-      data = DBHandler.get_course(parameters)
-    when "sell"
-      data = DBHandler.get_sell(parameters)
+  
+    if parameters["count"].nil?
+      # Get a single result
+      case type
+      when "book"
+        data = DBHandler.get_book(parameters)
+      when "department"
+        data = DBHandler.get_department(parameters)
+      when "course"
+        data = DBHandler.get_course(parameters)
+      when "sell"
+        data = DBHandler.get_sell(parameters)
+      else
+        halt "Invalid type of data requested."
+      end
     else
-      halt "Invalid type of data requested."
+      # Get many results
+      count = parameters["count"]
+      parameters.delete("count")
+      offset = parameters["offset"].nil? ? 0 : parameters["offset"]
+      parameters.delete("offset")
+      case type
+      when "book"
+        data = DBHandler.get_many_books(parameters, count, offset)
+      when "department"
+
+      when "course"
+
+      when "sell"
+      end
     end
 
     Serializer.serialize(type, data, @@ext)
