@@ -73,10 +73,11 @@ class Routes < Sinatra::Base
       when "book"
         data = DBHandler.get_many_books(parameters, count, offset)
       when "department"
-
+        data = DBHandler.get_many_departments(parameters, count, offset)
       when "course"
-
+        data = DBHandler.get_many_courses(parameters, count, offset)
       when "sell"
+        data = DBHandler.get_many_sells(parameters, count, offset)
       end
     end
 
