@@ -43,8 +43,8 @@ class Routes < Sinatra::Base
   post "/api/:type" do
     type = params[:type]
     parameters = clean_extension(params)
-    count = parameters.key("count") ? parameters.delete("count") : 1
-    offset = parameters.key("offset") ? parameters.delete("offset") : 0
+    count = parameters.key?("count") ? parameters.delete("count") : 1
+    offset = parameters.key?("offset") ? parameters.delete("offset") : 0
 
     # Remove captures, type and splat from outgoing hash
     parameters.delete("captures")
