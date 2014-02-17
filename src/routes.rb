@@ -40,46 +40,28 @@ class Routes < Sinatra::Base
   # @param type [String] The type of record being fetched
   # @param get-params [Hash] A & delimeted list, prepended by ?, with all the search parameters
   # Returns the record you're searching for or returns empty hash in JSON/XML
-  # @note Ensure you pass ext=<serialized type> in get parameters to specify your return format!
   post "/api/:type" do
     type = params[:type]
     parameters = clean_extension(params)
+    count = parameters.key("count") ? parameters.delete("count") : 1
+    offset = parameters.key("offset") ? parameters.delete("offset") : 0
 
     # Remove captures, type and splat from outgoing hash
     parameters.delete("captures")
     parameters.delete("type")
     parameters.delete("splat")
   
-    if parameters["count"].nil?
-      # Get a single result
-      case type
-      when "book"
-        data = DBHandler.get_book(parameters)
-      when "department"
-        data = DBHandler.get_department(parameters)
-      when "course"
-        data = DBHandler.get_course(parameters)
-      when "sell"
-        data = DBHandler.get_sell(parameters)
-      else
-        halt "Invalid type of data requested."
-      end
+    case type
+    when "book"
+      data = DBHandler.get_books(parameters, count, offset)
+    when "department"
+      data = DBHandler.get_departments(parameters, count, offset)
+    when "course"
+      data = DBHandler.get_courses(parameters, count, offset)
+    when "sell"
+      data = DBHandler.get_sells(parameters, count, offset)
     else
-      # Get many results
-      count = parameters["count"]
-      parameters.delete("count")
-      offset = parameters["offset"].nil? ? 0 : parameters["offset"]
-      parameters.delete("offset")
-      case type
-      when "book"
-        data = DBHandler.get_many_books(parameters, count, offset)
-      when "department"
-        data = DBHandler.get_many_departments(parameters, count, offset)
-      when "course"
-        data = DBHandler.get_many_courses(parameters, count, offset)
-      when "sell"
-        data = DBHandler.get_many_sells(parameters, count, offset)
-      end
+      halt "Invalid type of data requested."
     end
 
     Serializer.serialize(type, data, @@ext)
@@ -90,7 +72,6 @@ class Routes < Sinatra::Base
   # @param type [String] the type of record being added
   # @param post-params [Hash] the POST parameters passed with the HTTP request, gets passed as Hash to database
   # Returns the record you added to the database as your selected extension
-  # @note MAKE SURE YOU PASS AN "ext" PARAMETER. This is required to serialize the output of your request.
   post "/api/create/:type" do
     type = params[:type]
     parameters = clean_extension(params)

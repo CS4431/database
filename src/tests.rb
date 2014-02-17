@@ -9,6 +9,7 @@ class TestAPI < Test::Unit::TestCase
     res = Net::HTTP.post_form(uri, params)
     data = JSON.parse(res.body)
 
-    assert_equal(1, data["data"]["id"])
+    assert_equal(1, data[0]["data"]["id"])
+  # @note Ensure you pass ext=<serialized type> in get parameters to specify your return format!
   end
 end

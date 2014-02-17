@@ -19,32 +19,21 @@ module DBHandler
    ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/books.sqlite')
   end
 
-  # Gets book data as a hash
-  #
-  # @param hash [Hash] the book data to search for
-  # @return [Hash] the book data; empty hash if no book found
-  def DBHandler.get_book(hash = {})
-    edition = Edition.find_by(hash)
-    {} if edition.nil?
-    book = Book.find_by(id: edition.book_id)
-    hash = edition.to_hash
-    hash["title"] = book.title
-    hash
-  end
-
-  # Gets many books as a hash
+  # Gets multiple books as a hash
   #
   # @param hash [Hash] the book data to search for
   # @param count [Integer] how many books to return
   # @param offset [Integer] how many books to offset the search results by
   # @return [Array of Hashes] the book data, empty hash if no books found
-  def DBHandler.get_many_books(hash = {}, count, offset)
+  def DBHandler.get_books(hash = {}, count, offset)
     # change title parameter to book.title
     hash["book.title"] = hash.delete("title") if hash.has_key?("title")
 
-    editions = Edition.select("edition.*, book.*").joins(:book).where(hash).limit(count).offset(offset).references(:edition, :book)
+    editions = Edition.select("edition.*, book.title").joins(:book).where(hash).limit(count).offset(offset).references(:edition, :book)
     {} if editions.nil?
     editions_array = editions.to_a.map(&:serializable_hash)
+    p editions_array
+    editions_array
   end
 
   # Creates a book and edition
@@ -73,23 +62,13 @@ module DBHandler
     course_book.to_hash
   end
 
-  # Gets department data as a hash
-  #
-  # @param hash [Hash] the department data to search for
-  # @return [Hash] the department data; empty hash if no department found
-  def DBHandler.get_department(hash = {})
-    department = Department.find_by(hash)
-    {} if course.nil?
-    department.to_hash
-  end
-
   # Gets multiple department data as an array of hashes
   #
   # @param hash [Hash] the department data to search for
   # @param count [Integer] how many departments to return
   # @param offset [Integer] how many departments to offset the search result by
   # @return [Array of Hashes] the department data, empty hash if no departments found
-  def DBHandler.get_many_departments(hash = {}, count, offset)
+  def DBHandler.get_departments(hash = {}, count, offset)
     departments = Department.where(hash).limit(count).offset(offset)
     return {} if departments.nil?
     departments_array = departments.to_a.map(&:serializable_hash)
@@ -106,23 +85,13 @@ module DBHandler
     department.to_hash
   end
 
-  # Gets course data as a hash
-  #
-  # @param hash [Hash] the course data to search for
-  # @return [Hash] the course data; empty hash if no department found
-  def DBHandler.get_course(hash = {})
-    course = Course.find_by(hash)
-    {} if course.nil?
-    course.to_hash
-  end
-
   # Gets multiple course data as an array of hashes
   #
   # @param hash [Hash] the course data to search for
   # @param count [Integer] how many courses to return
   # @param offset [Integer] how many course to offset the search results by
   # @return [Array of Hashes] the course data; empty hash if no courses found
-  def DBHandler.get_many_courses(hash = {}, count, offset)
+  def DBHandler.get_courses(hash = {}, count, offset)
     courses = Course.where(hash).limit(count).offset(offset)
     return {} if courses.nil?
     courses_array = courses.to_a.map(&:serializable_hash)
@@ -139,23 +108,13 @@ module DBHandler
     course.to_hash
   end
 
-  # Gets sell data as a hash
-  #
-  # @param hash [Hash] the sell data to search for
-  # @return [Hash] the sell data; empty hash if no sell found
-  def DBHandler.get_sell(hash = {})
-    sell = Sell.find_by(hash)
-    {} if sell.nil?
-    sell.to_hash
-  end
-
   # Get multiple sell datas as an array of hashes
   #
   # @param hash [Hash] the sell data to search for
   # @param count [Integer] how many sells to return
   # @param offset [Integer] how many sells to offset the search results by
   # @return [Array of Hashes] the sell data, empty hash if no sells found
-  def DBHandler.get_many_sells(hash = {}, count, offset)
+  def DBHandler.get_sells(hash = {}, count, offset)
     sells = Sell.where(hash).limit(count).offset(offset)
     return {} if sells.nil?
     sells_array = sells.to_a.map(&:serializable_hash)
