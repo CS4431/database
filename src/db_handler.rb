@@ -39,14 +39,14 @@ module DBHandler
   # @param hash [Hash] the book data to add
   # @return [Hash] the edition added to database
   def DBHandler.create_book(hash = {})
-    book = Book.find_by({"title" => hash["title"]})
-    book = Book.create({"title" => hash["title"]}) if book.nil?
+    edition_group = EditionGroup.find_by({"title" => hash["title"]})
+    edition_group = EditionGroup.create({"title" => hash["title"]}) if edition_group.nil?
     hash.delete("title")
-    hash["book_id"] = book["id"]
-    edition = Edition.find_by(hash)
-    return edition.to_hash unless edition.nil?
+    hash["edition_group_id"] = edition_group["id"]
+    edition = DBHandler.get_books(hash, 1, 0)
+    return edition unless edition.empty?
     edition = Edition.create(hash)
-    edition.to_hash
+    DBHandler.get_books(hash, 1, 0)
   end
 
   # Creates an association betwwen a book and a course
