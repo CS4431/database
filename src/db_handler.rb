@@ -49,6 +49,15 @@ module DBHandler
     DBHandler.get_books(hash, 1, 0)
   end
 
+  # Updates a value in the edition table
+  #
+  # @param id [Integer] the id of the edition
+  # @param attribute [String] the attribute to update
+  # @param value [String] the new value
+  def DBHandler.update_edition_attribute(id, attribute, value)
+    Edition.update(id, attribute => value)
+  end
+
   # Creates an association betwwen a book and a course
   #
   # @param hash [Hash] the association data

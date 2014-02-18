@@ -191,4 +191,32 @@ module Scraper
     end
   end
 
+  # Downloads all book images and stores them in public/images/books
+  def Scraper.download_book_images
+    #get all books
+    books = DBHandler.get_books({}, 10000, 0)
+
+    public_folder = "../public/"
+    save_location = "images/books/"
+    not_found_link = save_location + "notfound.jpg"
+
+    books.each do |book|
+      image_uri = book["image"]
+      if image_uri.start_with?("http")
+        begin
+          image = open(image_uri).read
+          uri_parts = image_uri.split("/")
+          image_name = uri_parts.last
+          File.open(public_folder + save_location + image_name, 'wb') do |fo|
+            fo.write image
+          end
+          new_uri = save_location + image_name
+          DBHandler.update_edition_attribute(book["id"], "image", new_uri)
+        rescue
+          DBHandler.update_edition_attribute(book["id"], "image", nil)
+        end
+      end
+    end
+  end
+
 end
