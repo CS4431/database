@@ -1,12 +1,12 @@
 require 'sqlite3'
 require 'active_record'
-require_relative './book'
 require_relative './buy'
 require_relative './contact'
 require_relative './course'
 require_relative './course_book'
 require_relative './department'
 require_relative './edition'
+require_relative './edition_group'
 require_relative './sell'
 require_relative './user'
 require_relative './verification'
@@ -27,13 +27,11 @@ module DBHandler
   # @return [Array of Hashes] the book data, empty hash if no books found
   def DBHandler.get_books(hash = {}, count, offset)
     # change title parameter to book.title
-    hash["book.title"] = hash.delete("title") if hash.has_key?("title")
+    hash["edition_group.title"] = hash.delete("title") if hash.has_key?("title")
 
-    editions = Edition.select("edition.*, book.title").joins(:book).where(hash).limit(count).offset(offset).references(:edition, :book)
+    editions = Edition.select("edition.*, edition_group.title").joins(:edition_group).where(hash).limit(count).offset(offset).references(:edition, :edition_group)
     {} if editions.nil?
     editions_array = editions.to_a.map(&:serializable_hash)
-    p editions_array
-    editions_array
   end
 
   # Creates a book and edition

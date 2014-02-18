@@ -1,6 +1,6 @@
-# Handles book database table
-class Book < ActiveRecord::Base
-  self.table_name = "book"
+# Handles edition_group database table
+class EditionGroup < ActiveRecord::Base
+  self.table_name = "edition_group"
   has_many :editions
 
   # Returns Book data as a hash

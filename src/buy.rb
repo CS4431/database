@@ -7,7 +7,7 @@ class Buy < ActiveRecord::Base
     hash = {
       "id" => id,
       "user_id" => user_id,
-      "book_id" => book_id,
+      "edition_id" => edition_id,
       "start_date" => start_date,
       "end_date" => end_date }
   end
