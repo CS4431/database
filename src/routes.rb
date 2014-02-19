@@ -53,18 +53,24 @@ class Routes < Sinatra::Base
   
     case type
     when "book"
-      data = DBHandler.get_books(parameters, count, offset)
+      books = DBHandler.get_books(parameters, count, offset)
+      data_hash = {"book" => books}
     when "department"
-      data = DBHandler.get_departments(parameters, count, offset)
+      departments = DBHandler.get_departments(parameters, count, offset)
+      data_hash = {"department" => departments}
     when "course"
-      data = DBHandler.get_courses(parameters, count, offset)
+      courses = DBHandler.get_courses(parameters, count, offset)
+      data_hash = {"course" => courses}
     when "sell"
-      data = DBHandler.get_sells(parameters, count, offset)
+      sells = DBHandler.get_sells(parameters, count, offset)
+      edition_ids = sells.collect { |sell| sell["edition_id"] }
+      books = DBHandler.get_books({"id" => edition_ids}, edition_ids.count, 0)
+      data_hash = {"sell" => sells, "book" => books}
     else
       halt "Invalid type of data requested."
     end
 
-    Serializer.serialize(type, data, @@ext)
+    Serializer.serialize(data_hash, @@ext)
   end
 
   # @method add_to_database
