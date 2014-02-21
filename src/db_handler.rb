@@ -1,5 +1,5 @@
 require 'sqlite3'
-require 'active_record'
+require 'sinatra/activerecord'
 require_relative './buy'
 require_relative './contact'
 require_relative './course'
@@ -14,11 +14,6 @@ require_relative './verification'
 # Handles all database connections
 module DBHandler
   
-  # Establishes a connection with the database
-  def DBHandler.establish_connection
-   ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/books.sqlite')
-  end
-
   # Gets multiple books as a hash
   #
   # @param hash [Hash] the book data to search for
@@ -154,7 +149,7 @@ module DBHandler
   # @return [Hash] the sell data added
   def DBHandler.create_sell(hash)
     sell = Sell.create(hash)
-    return sell.to_hash
+    return DBHandler.get_sells(hash, 1, 0)
   end
 
   # Verifies a user account

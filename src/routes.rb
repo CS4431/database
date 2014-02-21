@@ -1,14 +1,11 @@
 require 'sinatra/base'
+require 'sinatra/activerecord'
 require_relative './db_handler'
 require_relative './serializer'
 
 # Handles all url pattern matching and sends the requested data back to the user. Main entry point of the application.
 class Routes < Sinatra::Base
   @extensions = Serializer::EXTENSIONS
-  
-  before do
-    DBHandler.establish_connection
-  end
 
   # Checks for existence of the ext get parameter and assigns it to a class variable
   # @param p [Hash] the parameters hash
@@ -89,12 +86,13 @@ class Routes < Sinatra::Base
 
     case type
     when "sell"
-      data = DBHandler.create_sell(parameters)
+      sells = DBHandler.create_sell(parameters)
+      data_hash = {"sell" => sells}
     else
       halt "Invalid data type requested."
     end
 
-    Serializer.serialize(type, data, @@ext)
+    Serializer.serialize(data_hash, @@ext)
   end
 
   # @method verify
