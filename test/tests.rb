@@ -3,6 +3,7 @@ require 'net/http'
 require 'json'
 
 class TestAPI < Test::Unit::TestCase
+  # Tests that the book request with no "ext" parameter loads correctly
   def test_book_request_no_ext
     params = {"id" => "1"}
     uri = URI("http://localhost:4567/api/book")
