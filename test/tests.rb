@@ -2,6 +2,7 @@ require 'test/unit'
 require 'net/http'
 require 'json'
 
+# Main class for running unit tests
 class TestAPI < Test::Unit::TestCase
   # Tests that the book request with no "ext" parameter loads correctly
   def test_book_request_no_ext

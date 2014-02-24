@@ -33,9 +33,9 @@ class Routes < Sinatra::Base
   end
 
   # @method select_from_database
-  # @overload get "/api/:type?foo=bar&foo2=bar2..."
+  # @overload get "/api/:type"
   # @param type [String] The type of record being fetched
-  # @param get-params [Hash] A & delimeted list, prepended by ?, with all the search parameters
+  # @param post-params [Hash] the POST parameters passed with the HTTP request, gets passed as Hash to database
   # Returns the record you're searching for or returns empty hash in JSON/XML
   post "/api/:type" do
     type = params[:type]
