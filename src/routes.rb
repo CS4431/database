@@ -63,6 +63,9 @@ class Routes < Sinatra::Base
       edition_ids = sells.collect { |sell| sell["edition_id"] }
       books = DBHandler.get_books({"id" => edition_ids}, edition_ids.count, 0)
       data_hash = {"sell" => sells, "book" => books}
+    when "counts"
+      counts = DBHandler.get_counts
+      data_hash = {"counts" => counts}
     else
       halt "Invalid type of data requested."
     end

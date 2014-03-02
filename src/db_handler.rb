@@ -176,4 +176,15 @@ module DBHandler
     return false if user.nil?
     user.login(password)
   end
+
+  # Get a count of the number of books, buys, courses, departments and sells
+  # 
+  # @return [Array of Hashes] the number of items in each table
+  def DBHandler.get_counts
+    data_array = [{"book" => Edition.count,
+                   "buy" => Buy.count,
+                   "course" => Course.count,
+                   "department" => Department.count,
+                   "sell" => Sell.count}]
+  end
 end
