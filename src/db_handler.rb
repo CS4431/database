@@ -107,7 +107,13 @@ module DBHandler
   # @param offset [Integer] how many course to offset the search results by
   # @return [Array of Hashes] the course data; empty hash if no courses found
   def DBHandler.get_courses(hash = {}, count, offset)
-    courses = Course.where(hash).limit(count).offset(offset)
+    courses = Course.select('course.*,
+                            department.name AS "department_name"').
+      joins('INNER JOIN department ON course.department_id = department.id').
+      where(hash).
+      limit(count).
+      offset(offset).
+      references(:course, :department)
     return {} if courses.nil?
     courses_array = courses.to_a.map(&:serializable_hash)
   end
