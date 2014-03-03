@@ -24,7 +24,14 @@ module DBHandler
     # change title parameter to book.title
     hash["edition_group.title"] = hash.delete("title") if hash.has_key?("title")
 
-    editions = Edition.select("edition.*, edition_group.title").joins(:edition_group).where(hash).limit(count).offset(offset).references(:edition, :edition_group)
+    editions = Edition.select('edition.*, edition_group.title, count(sell.id) AS "for_sale"').
+      joins(:edition_group).
+      joins('LEFT OUTER JOIN sell ON sell.edition_id = edition.id').
+      references(:edition, :edition_group, :sell).
+      group("edition.id").
+      where(hash).
+      limit(count).
+      offset(offset)
     {} if editions.nil?
     editions_array = editions.to_a.map(&:serializable_hash)
   end
