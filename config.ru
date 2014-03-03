@@ -21,6 +21,7 @@ class RackHandler
   end
 end
 
+set :bind, '0.0.0.0'
 set :env, :development
 set :port, 4567
 set :database, {adapter: "sqlite3", database: "db/books.sqlite"}
