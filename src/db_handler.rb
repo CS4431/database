@@ -167,8 +167,8 @@ module DBHandler
   # @param hash [Hash] the sell data to add to the database
   # @return [Hash] the sell data added
   def DBHandler.create_sell(hash)
-    sell = Sell.create(hash)
-    return DBHandler.get_sells(hash, 1, 0)
+    sell = Sell.new_with_dates(hash)
+    return DBHandler.get_sells({"id" => sell.id}, 1, 0)
   end
 
   # Verifies a user account

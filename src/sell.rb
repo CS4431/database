@@ -1,6 +1,17 @@
+require 'date'
+
 # Handles sell database table
 class Sell < ActiveRecord::Base
   self.table_name = "sell"
+  @@expire_days = 30
+
+  def Sell.new_with_dates(hash)
+    sell = Sell.new(hash)
+    sell.start_date = Time.now
+    sell.end_date = Time.now + @@expire_days.days
+    sell.save
+    sell
+  end
 
   # Returns Sell data as a hash
   def to_hash
