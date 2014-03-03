@@ -10,7 +10,7 @@ module MailHandler
   # @param mail_body [String] body of the email 
   def MailHandler.send(send_to, mail_subject, mail_body)
     Mail.deliver do
-      from 'notifications@107.170.7.58'
+      from 'notifications@bookmarket.webhop.org'
       to send_to
       subject mail_subject
       body mail_body
@@ -22,7 +22,7 @@ module MailHandler
   # @param email [String] email address to send verification to
   # @param code [String] verification code to send
   def MailHandler.send_verification(email, code)
-    body = "To verify you account please follow this link: http://107.170.7.58/verify/#{code}"
+    body = "To verify you account please follow this link: http://bookmarket.webhop.org:4567/verify/#{code}"
     MailHandler.send(email, "Account Verification" => body)
   end
 
