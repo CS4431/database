@@ -26,7 +26,7 @@ module DBHandler
 
     editions = Edition.select('edition.*, 
                               edition_group.title,
-                              count(sell.id) AS "for_sale",
+                              count(sell.id)/2 AS "for_sale",
                               Group_Concat(DISTINCT course.code||"-"||course.section) AS "course_code"').
       joins(:edition_group).
       joins('LEFT OUTER JOIN sell ON sell.edition_id = edition.id').
@@ -146,20 +146,16 @@ module DBHandler
   # @param email [String] the user's email
   # @param password [String] the user's plaintext password
   # @return [Integer] the created user's account id
-  def DBHandler.create_user(email, password)
+  def DBHandler.create_user(hash)
     user = User.new
-    user.email = email
-    user.pass = password
+    user.email = hash["email"]
+    user.pass = hash["password"]
     user.save
     
-    verification = Verification.new
-    verification.code = Verification.generate_code
-    verification.user_id = user.id
-    verification.save
-
+    verification = Verification.generate_code(user.id)
     MailHandler.send_verification(user.email, verification.code)
 
-    return user.id
+    users_array = [user.to_hash]
   end
 
   # Creates a sell request record in the database
