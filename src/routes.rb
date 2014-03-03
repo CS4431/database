@@ -58,6 +58,10 @@ class Routes < Sinatra::Base
     when "course"
       courses = DBHandler.get_courses(parameters, count, offset)
       data_hash = {"course" => courses}
+    when "coursedetail"
+      courses = DBHandler.get_courses(parameters, count, offset)
+      books = DBHandler.get_books({"course_book.course_id" => courses[0]["id"]}, 100, 0)
+      data_hash = {"course" => courses, "book" => books}
     when "sell"
       sells = DBHandler.get_sells(parameters, count, offset)
       edition_ids = sells.collect { |sell| sell["edition_id"] }
