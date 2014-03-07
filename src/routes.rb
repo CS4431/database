@@ -1,5 +1,6 @@
-require 'sinatra/base'
+require 'json'
 require 'sinatra/activerecord'
+require 'sinatra/base'
 require_relative './db_handler'
 require_relative './serializer'
 
@@ -40,6 +41,7 @@ class Routes < Sinatra::Base
   post "/api/:type" do
     type = params[:type]
     parameters = clean_extension(params)
+    parameters = JSON.parse(parameters["json"]) if parameters.has_key? "json"
     count = parameters.key?("count") ? parameters.delete("count") : 1
     offset = parameters.key?("offset") ? parameters.delete("offset") : 0
 
@@ -92,6 +94,7 @@ class Routes < Sinatra::Base
   post "/api/create/:type" do
     type = params[:type]
     parameters = clean_extension(params)
+    parameters = JSON.parse(parameters["json"]) if parameters.has_key? "json"
 
     # Remove captures, type and splat from outgoing hash
     parameters.delete("captures")
