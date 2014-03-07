@@ -46,6 +46,15 @@ module DBHandler
 
     {} if editions.nil?
     editions_array = editions.to_a.map(&:serializable_hash)
+    # count the number of each edition that is for sale
+    editions_array.each do |edition|
+      for_sale = Sell.select('count(*) AS "for_sale"').
+        where({"edition_id" => edition["id"]}).
+        count
+      edition["for_sale"] = for_sale
+    end
+
+    editions_array
   end
 
   # Creates a book and edition
