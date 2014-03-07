@@ -55,6 +55,13 @@ class Routes < Sinatra::Base
     when "department"
       departments = DBHandler.get_departments(parameters, count, offset)
       data_hash = {"department" => departments}
+    when "departmentdetail"
+      departments = DBHandler.get_departments(parameters, count, offset)
+      departments.each do |department|
+        courses = DBHandler.get_courses({"department_id" => department["id"]}, 1000, 0)
+        department["courses"] = courses
+      end
+      data_hash = {"department_courses" => departments}
     when "course"
       courses = DBHandler.get_courses(parameters, count, offset)
       data_hash = {"course" => courses}
