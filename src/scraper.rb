@@ -1,3 +1,4 @@
+require 'net/http'
 require 'nokogiri'
 require 'open-uri'
 require 'logger.rb'
@@ -152,9 +153,10 @@ module Scraper
 
         # isbn is the first line
         isbn = lines[0]
-        edition_hash["isbn"] = isbn
+        edition_hash["isbn"] = Scraper.convert_to_isbn_13(isbn)
         edition_hash["title"] = title
-        edition_hash["image"] = img_url_base + isbn + ".jpg"
+        img_url = img_url_base + isbn + ".jpg"
+        edition_hash["image"] = (Scraper.verify_link(img_url)) ? img_url : nil
 
         lines.each do |line|
           if /Author: [.]*/.match(line)
@@ -217,6 +219,39 @@ module Scraper
         end
       end
     end
+  end
+
+  # Verify that the destination of a link exists
+  # @param url [String] url of the link to verify
+  # @return [Bool] true if the link exists; false otherwise
+  def Scraper.verify_link(url)
+    uri = URI(url)
+    request = Net::HTTP.new uri.host
+    response = request.request_head uri.path
+    return response.code.to_i == 200
+  end
+
+  # Converts an isbn into isbn-13 format
+  # @param isbn [String] the isbn to convert
+  # @return [String] the isbn in isbn-13 format; nil if input is not a valid isbn
+  def Scraper.convert_to_isbn_13(isbn)
+    return isbn if (isbn.size == 13)
+    return nil unless (isbn.size == 10)
+    
+    # remove checksum
+    isbn = isbn[0,9]
+
+    isbn = "978" + isbn
+    mult_values = [1,3]
+    index = 0
+    checksum = 0
+    isbn.each_char do |c|
+      mult_by = mult_values[index % 2]
+      checksum += c.to_i * mult_by
+      index += 1
+    end
+    isbn += (10 - (checksum % 10)).to_s
+    isbn
   end
 
 end
