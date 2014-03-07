@@ -38,6 +38,7 @@ module Schema
       # course table
       create_table :course do |t|
         t.string :title, null: false
+        t.string :code, null: false
         t.string :section, null: false
         t.string :instructor
         t.string :term
@@ -69,7 +70,7 @@ module Schema
       # sell table
       create_table :sell do |t|
         t.integer :user_id, null: false
-        t.integer :ediiton_id, null: false
+        t.integer :edition_id, null: false
         t.integer :price, null: false
         t.datetime :start_date, null: false
         t.datetime :end_date, null: false
