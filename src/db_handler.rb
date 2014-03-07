@@ -66,10 +66,9 @@ module DBHandler
     edition_group = EditionGroup.create({"title" => hash["title"]}) if edition_group.nil?
     hash.delete("title")
     hash["edition_group_id"] = edition_group["id"]
-    edition = DBHandler.get_books(hash, 1, 0)
-    return edition unless edition.empty?
-    edition = Edition.create(hash)
-    DBHandler.get_books(hash, 1, 0)
+    edition = Edition.where({"isbn" => hash["isbn"]})
+    return edition[0] unless edition.empty?
+    edition = Edition.create(hash)[0]
   end
 
   # Updates a value in the edition table

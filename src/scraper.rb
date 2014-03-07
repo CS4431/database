@@ -85,8 +85,8 @@ module Scraper
           end
         when 1
           # course name is the line after course code, no need to search
-          #puts line.text
-          course_hash["title"] = line.text.gsub("\n", "")
+          # remove "Computer Requirements" from the title
+          course_hash["title"] = line.text.gsub("\n", "").gsub("Computer Requirements", "")
           looking_for += 1
         when 2
           # look for instructor
@@ -119,7 +119,7 @@ module Scraper
                 "instructor" => course["instructor"],
                 "term" => term + course["code"][10] }
         db_data = DBHandler.create_course(data)
-        Scraper.get_all_books(course["books_link"], db_data["id"]) 
+        #Scraper.get_all_books(course["books_link"], db_data["id"]) 
       end
 
     rescue
@@ -185,7 +185,7 @@ module Scraper
       editions.each do |edition|
         db_edition = DBHandler.create_book(edition)
         DBHandler.create_course_book({"course_id" => course_id,
-                                     "edition_id" => db_edition["id"]})
+                                      "edition_id" => db_edition["id"]})
       end
     rescue
       self.log("get_all_books failed.")

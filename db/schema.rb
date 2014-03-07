@@ -59,6 +59,7 @@ module Schema
         t.integer :isbn, null: false
         t.integer :edition_group_id, null: false
         t.string :author
+        t.string :publisher
         t.integer :edition
         t.string :cover
         t.string :image
