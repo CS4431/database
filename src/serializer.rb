@@ -54,4 +54,26 @@ module Serializer
     return result
   end
 
+  # Parses json post parameters
+  #
+  # @param json_params [String] json containing the post parameters
+  # @return [Hash] the post parameters as a hash
+  def Serializer.parse_json_parameters(json_params)
+    params = JSON.parse(json_params)
+
+    params.each do |p_key, p_value|
+      # convert JSON array onto ruby array
+      if p_value.is_a? Array
+        params[p_key] = params[p_key].collect do |arr_hashes|
+          # is it a json array (array of hashes)?
+          if arr_hashes.is_a? Hash
+            arr_hashes = arr_hashes.collect { |k, v| v }
+          else
+            arr_hashes
+          end
+        end
+        params[p_key].flatten!
+      end
+    end
+  end
 end
