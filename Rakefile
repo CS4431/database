@@ -1,6 +1,7 @@
 require 'rake/testtask'
 require 'sinatra/activerecord'
 require_relative 'db/schema'
+require_relative 'src/scraper'
 
 Rake::TestTask.new do |t|
   t.libs << "test"
@@ -11,8 +12,7 @@ end
 namespace :db do
   desc "Recreates a database based on the defined schema"
   task :recreate  do
-    ActiveRecord::Base.establish_connection(adapter: 'sqlite3',
-                                            database: 'db/books.sqlite')
+    DBHandler.establish_connection
     Schema.drop_tables
     Schema.create_db
   end
@@ -21,8 +21,16 @@ end
 namespace :db do
   desc "Creates a database based on the defined schema"
   task :create do
-    ActiveRecord::Base.establish_connection(adapter: 'sqlite3',
-                                            database: 'books.sqlite')
+    DBHandler.establish_connection
     Schema.create_db
+  end
+end
+
+namespace :scraper do
+  desc "Run the scraper"
+  task :run do
+    DBHandler.establish_connection
+    url = "http://timetable.lakeheadu.ca/2013FW_UG_TBAY/courtime.html"
+    Scraper.get_all_programs(url)
   end
 end

@@ -17,7 +17,7 @@ module DBHandler
   # Establish a connection to the database. Used to connect to the database when the server is not running (ie. using irb)
   def DBHandler.establish_connection
     ActiveRecord::Base.establish_connection(adapter: 'sqlite3',
-                                            database: '../db/books.sqlite')
+                                            database: 'db/books.sqlite')
   end
 
   # Gets multiple books as a hash
