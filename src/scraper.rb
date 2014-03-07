@@ -119,7 +119,7 @@ module Scraper
                 "instructor" => course["instructor"],
                 "term" => term + course["code"][10] }
         db_data = DBHandler.create_course(data)
-        #Scraper.get_all_books(course["books_link"], db_data["id"]) 
+        Scraper.get_all_books(course["books_link"], db_data["id"]) 
       end
 
     rescue
