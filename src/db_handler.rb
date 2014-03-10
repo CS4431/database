@@ -164,6 +164,7 @@ module DBHandler
     user = User.new
     user.email = hash["email"]
     user.pass = hash["password"]
+    user.verified = false
     user.save
     
     #verification = Verification.generate_code(user.id)
