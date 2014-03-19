@@ -3,6 +3,8 @@ require 'securerandom'
 # Handles verification database table
 class Verification < ActiveRecord::Base
   self.table_name = "verification"
+  validates :code, presence: true
+  validates :user_id, presence: true
 
   # Generates a verification code
   #

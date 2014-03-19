@@ -1,6 +1,8 @@
 # Handles buy database table
 class Buy < ActiveRecord::Base
   self.table_name = "buy"
+  validates :user_id, presence: true
+  validates :edition_id, presence: true
 
   # Returns Buy data as a hash
   def to_hash

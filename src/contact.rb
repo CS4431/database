@@ -1,6 +1,8 @@
 # Handles contact database table
 class Contact < ActiveRecord::Base
   self.table_name = "contact"
+  validates :contactor_id, presence: true
+  validates :listing_id, presence: true
 
   # Returns Contact data as a hash
   def to_hash

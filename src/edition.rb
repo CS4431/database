@@ -2,6 +2,8 @@
 class Edition < ActiveRecord::Base
   self.table_name = "edition"
   belongs_to :edition_group, foreign_key: "edition_group_id"
+  validates :isbn, presence: true
+  validates :edition_group_id, presence: true
 
   # Returns Edition data as a hash
   def to_hash
