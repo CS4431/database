@@ -54,10 +54,10 @@ class Routes < Sinatra::Base
 
     unless tok.nil? then
       token_hash = {"token" => tok}
-      data_hash = {"token" => token_hash}
+      data_hash = {"token" => [token_hash]}
     else
       error_hash = {"error" => "User is not verified."}
-      data_hash = {"error" => error_hash}
+      data_hash = {"error" => [error_hash]}
     end
 
     Serializer.serialize(data_hash, @@ext)
