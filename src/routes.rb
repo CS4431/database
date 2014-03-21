@@ -52,8 +52,13 @@ class Routes < Sinatra::Base
 
     tok = DBHandler.generate_access_token(email) if(DBHandler.login(email, password))
 
-    token_hash = {"token" => tok}
-    data_hash = {"token" => token_hash}
+    unless tok.nil? then
+      token_hash = {"token" => tok}
+      data_hash = {"token" => token_hash}
+    else
+      error_hash = {"error" => "User is not verified."}
+      data_hash = {"error" => error_hash}
+    end
 
     Serializer.serialize(data_hash, @@ext)
   end
@@ -139,6 +144,34 @@ class Routes < Sinatra::Base
 
     Serializer.serialize(data_hash, @@ext)
   end
+
+  # @method delete_from_database
+  # @overload post "/api/delete/:type"
+  # @param type [String] the type of record being added
+  # @param post-params [Hash] the POST parameters passed with the HTTP request, gets passed as Hash to database
+  # Returns the record you added to the database as your selected extension
+  post '/api/delete/:type' do
+    type = params[:type]
+    parameters = clean_extension(params)
+    parameters = Serializer.parse_json_parameters(parameters["json"]) if parameters.has_key? "json"
+
+    # Remove captures, type and splat from outgoing hash
+    parameters.delete("captures")
+    parameters.delete("type")
+    parameters.delete("splat")
+
+    case type
+    when "sell"
+      sell = DBHandler.delete_sell(parameters)
+      data_hash = {"sell" => sell}
+    else
+      halt "Invalid data type requested."
+    end
+
+    Serializer.serialize(data_hash, @@ext)
+  end
+
+
 
   # @method verify
   # @param code [String] code to verify account

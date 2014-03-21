@@ -184,6 +184,18 @@ module DBHandler
     return DBHandler.get_sells({"id" => sell.id}, 1, 0)
   end
 
+  # Deletes a sell request record in the database
+  #
+  # @param hash [Hash] the sell data to find by
+  # @return [Hash] a hash with the id of the deleted sell
+  def DBHandler.delete_sell(hash)
+    sell = Sell.find_by(hash)
+    {} if sell.nil?
+    id = sell.id
+    sell.delete
+    id
+  end
+
   # Verifies a user account
   #
   # @param code [String] verification code
@@ -213,6 +225,8 @@ module DBHandler
   # @param email [String] user's email
   # @return [String] unique access token to give to application
   def DBHandler.generate_access_token(email)
+    nil unless User.find_by({"email" => email, "verified" => true})
+
     token = Token.find_by(email: email)
 
     if token.nil? or Time.now > token.end_date then
