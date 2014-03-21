@@ -30,7 +30,13 @@ module DBHandler
   def DBHandler.get_books(hash = {}, count, offset)
     # change title parameter to book.title
     hash["edition_group.title"] = hash.delete("title") if hash.has_key?("title")
-
+    if hash.has_key?("department_id")
+      department_id = hash.delete("department_id")
+      courses = get_courses({"department_id" => department_id}, 1000, 0)
+      return {} if courses.nil?
+      hash["course.id"] = courses.collect { |course| course["id"] }
+      puts hash["course.id"]
+    end
     editions = Edition.select('edition.*, 
                               edition_group.title,
                               count(sell.id)/2 AS "for_sale",
