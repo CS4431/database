@@ -56,7 +56,7 @@ class Routes < Sinatra::Base
       token_hash = {"token" => tok}
       data_hash = {"token" => [token_hash]}
     else
-      error_hash = {"error" => "User is not verified."}
+      error_hash = {"error" => "Wrong username/password or user has not completed verification process."}
       data_hash = {"error" => [error_hash]}
     end
 
@@ -110,7 +110,8 @@ class Routes < Sinatra::Base
       counts = DBHandler.get_counts
       data_hash = {"counts" => counts}
     else
-      halt "Invalid type of data requested."
+      error_hash = {"error" => "Invalid data type requested."}
+      data_hash = {"error" => error_hash}
     end
 
     Serializer.serialize(data_hash, @@ext)
@@ -139,7 +140,8 @@ class Routes < Sinatra::Base
       user = DBHandler.create_user(parameters)
       data_hash = {"user" => user}
     else
-      halt "Invalid data type requested."
+      error_hash = {"error" => "Invalid data type requested."}
+      data_hash = {"error" => error_hash}    
     end
 
     Serializer.serialize(data_hash, @@ext)
@@ -165,7 +167,8 @@ class Routes < Sinatra::Base
       sell = DBHandler.delete_sell(parameters)
       data_hash = {"sell" => sell}
     else
-      halt "Invalid data type requested."
+      error_hash = {"error" => "Invalid data type requested."}
+      data_hash = {"error" => error_hash}
     end
 
     Serializer.serialize(data_hash, @@ext)

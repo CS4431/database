@@ -6,7 +6,7 @@ class Token < ActiveRecord::Base
 
   # Creates a unique access token
   #
-  # @returns [String] a universally unique identifier
+  # @return [String] a universally unique identifier
   def Token.generate_token
     SecureRandom.uuid
   end

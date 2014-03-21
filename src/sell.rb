@@ -5,6 +5,7 @@ class Sell < ActiveRecord::Base
   self.table_name = "sell"
   @@expire_days = 30
 
+  # Creates new Sell object with 30 day expiry
   def Sell.new_with_dates(hash)
     sell = Sell.new(hash)
     sell.start_date = Time.now

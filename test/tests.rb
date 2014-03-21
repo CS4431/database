@@ -15,6 +15,7 @@ class TestAPI < Test::Unit::TestCase
   # @note Ensure you pass ext=<serialized type> in get parameters to specify your return format!
   end
 
+  # Tests that a user gets created fine
   def test_create_user
   	params = {"email" => "foo@lakeheadu.ca", "password" => "foo", "ext" => "json"}
   	uri = URI("http://localhost:4567/api/create/user")
@@ -23,9 +24,10 @@ class TestAPI < Test::Unit::TestCase
   	assert_equal(res.code.to_i, 200)
 	end
 
+  # Tests that a user can login
   def test_login
     # Create user first
-    params = {"email" => "foo@lakeheadu.ca", "password" => "foo", "ext" => "json"}
+    params = {"email" => "foo@lakeheadu.ca", "password" => "foo", "verified" => "true", "ext" => "json"}
     uri = URI("http://localhost:4567/api/create/user")
     res = Net::HTTP.post_form(uri, params)
 
