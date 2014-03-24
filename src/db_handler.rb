@@ -223,7 +223,7 @@ module DBHandler
   # @return [Bool] true if login information is correct; false otherwise
   def DBHandler.login(email, password)
     user = User.find_by(email: email)
-    nil if user.nil?
+    return false if user.nil?
     user.login(password)
   end
 
