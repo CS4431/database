@@ -39,11 +39,9 @@ module DBHandler
     end
     editions = Edition.select('edition.*, 
                               edition_group.title,
-                              count(sell.id)/2 AS "for_sale",
                               Group_Concat(DISTINCT course.code||"-"||course.section) AS "course_code"').
       joins(:edition_group).
-      joins('LEFT OUTER JOIN sell ON sell.edition_id = edition.id').
-      references(:edition, :edition_group, :sell).
+      references(:edition, :edition_group).
       group("edition.id").
       joins('INNER JOIN course_book ON course_book.edition_id = edition.id').
       joins('INNER JOIN course ON course_book.course_id = course.id').
