@@ -240,7 +240,8 @@ module DBHandler
       token = Token.new do |t|
         t.email = email
         t.start_date = Time.now
-        t.end_date = Time.now + 20*60
+        seven_days = 604800
+        t.end_date = Time.now + seven_days
         t.token = Token.generate_token
       end
       token.save
