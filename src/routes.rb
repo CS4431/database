@@ -47,8 +47,8 @@ class Routes < Sinatra::Base
     parameters.delete("type")
     parameters.delete("splat")
 
-    email = parameters["email"]
-    password = parameters["password"]
+    email = URI.unescape(parameters["email"])
+    password = URI.unescape(parameters["password"])
 
     tok = DBHandler.generate_access_token(email) if(DBHandler.login(email, password))
 
