@@ -19,6 +19,11 @@ class Routes < Sinatra::Base
     return p
   end
 
+
+  def unescape_params(params)
+    params.each { |k,v| params[k] = URI.unescape(v) }
+  end
+
   # Routes
 
   # @method get_documentation
@@ -46,9 +51,10 @@ class Routes < Sinatra::Base
     parameters.delete("captures")
     parameters.delete("type")
     parameters.delete("splat")
+    parameters = unescape_params(parameters)
 
-    email = URI.unescape(parameters["email"])
-    password = URI.unescape(parameters["password"])
+    email = parameters["email"]
+    password = parameters["password"]
 
     tok = DBHandler.generate_access_token(email) if(DBHandler.login(email, password))
 
@@ -79,6 +85,7 @@ class Routes < Sinatra::Base
     parameters.delete("captures")
     parameters.delete("type")
     parameters.delete("splat")
+    parameters = unescape_params(parameters)
   
     case type
     when "book"
@@ -131,6 +138,7 @@ class Routes < Sinatra::Base
     parameters.delete("captures")
     parameters.delete("type")
     parameters.delete("splat")
+    parameters = unescape_params(parameters)
 
     if (parameters.has_key?("user_id"))
       token = {"token" => parameters["user_id"]}
@@ -172,6 +180,7 @@ class Routes < Sinatra::Base
     parameters.delete("captures")
     parameters.delete("type")
     parameters.delete("splat")
+    parameters = unescape_params(parameters)
 
     case type
     when "sell"
