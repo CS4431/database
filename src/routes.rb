@@ -149,7 +149,7 @@ class Routes < Sinatra::Base
       data_hash = {"sell" => sells}
     when "user"
       parameters['email'] = URI.unescape(parameters['email'])
-      parameters['password'] = URI.unescape(parameters['password']
+      parameters['password'] = URI.unescape(parameters['password'])
       user = DBHandler.create_user(parameters)
       data_hash = {"user" => user}
     else
