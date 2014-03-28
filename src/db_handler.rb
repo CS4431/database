@@ -7,6 +7,7 @@ require_relative './course_book'
 require_relative './department'
 require_relative './edition'
 require_relative './edition_group'
+require_relative './mailhandler'
 require_relative './sell'
 require_relative './user'
 require_relative './verification'
@@ -164,18 +165,18 @@ module DBHandler
   #
   # @param email [String] the user's email
   # @param password [String] the user's plaintext password
+  # @param send_email [Boolean] should the server send an email for verification
   # @return [Integer] the created user's account id
-  def DBHandler.create_user(hash)
+  def DBHandler.create_user(hash, send_email)
     user = User.new
     user.email = hash["email"]
     user.pass = hash["password"]
     user.verified = false
     user.save
-    
-    #verification = Verification.generate_code(user.id)
-    #MailHandler.send_verification(user.email, verification.code)
 
-    # Why does users get passed backs as an array???? -David
+    verification = Verification.generate(user.id)
+    MailHandler.send_verification(user.email, verification.code) if send_email
+
     users_array = [user.to_hash]
   end
 
