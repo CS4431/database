@@ -201,14 +201,4 @@ class Routes < Sinatra::Base
     end
   end
 
-  # Since we are subclassing Sinatra, we need to start Sinatra if being run directly
-  if app_file == $0
-    set :root, Pathname.new(Pathname(__FILE__).dirname + '/../')
-    set :public_folder, '../public'
-    run!
-  else
-    set :root, Pathname.new(Pathname(__FILE__).dirname + './')
-    set :public_folder, './public'
-  end
-  #run! if app_file == $0
 end
