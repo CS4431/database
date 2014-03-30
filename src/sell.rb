@@ -3,6 +3,9 @@ require 'date'
 # Handles sell database table
 class Sell < ActiveRecord::Base
   self.table_name = "sell"
+  validates :user_id, presence: true
+  validates :edition_id, presence: true
+  validates :price, presence: true
   @@expire_days = 30
 
   # Creates new Sell object with 30 day expiry
