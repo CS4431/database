@@ -192,7 +192,7 @@ module DBHandler
   # Deletes a sell request record in the database
   #
   # @param hash [Hash] the sell data to find by
-  # @return [Hash] a hash with the id of the deleted sell
+  # @return [Number] the id of the deleted sell
   def DBHandler.delete_sell(hash)
     sell = Sell.find_by(hash)
     {} if sell.nil?
@@ -200,6 +200,24 @@ module DBHandler
     sell.delete
     id
   end
+
+  # Edits a sell's price in the database
+  #
+  # @param hash [Hash] the data passed from the request
+  # @return [Sell] the record that was edited, nil on error
+  def DBHandler.edit_sell(hash)
+    sell = Sell.find_by(id: hash["id"])
+    nil if sell.nil?
+    # only editable field is price
+    if hash.has_key?("price") then
+      sell.price = hash["price"]
+      sell.save
+      return sell.to_hash
+    else
+      return nil
+    end
+  end
+
 
   # Verifies a user account
   #

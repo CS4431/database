@@ -13,9 +13,13 @@ module Serializer
   def Serializer.serialize(data_hash, ext)
     # Serialize an array of hashes
     hash_array = []
-    data_hash.each do |kind, data_array|
-      data_array.each do |data|
-        hash_array << { "kind" => kind, "data" => data }
+    data_hash.each do |kind, data|
+      if data.kind_of?(Array) then
+        data.each do |datum|
+          hash_array << { "kind" => kind, "data" => datum }
+        end
+      else
+        hash_array << {"kind" => kind, "data" => data}
       end
     end
 

@@ -187,7 +187,36 @@ class Routes < Sinatra::Base
     Serializer.serialize(data_hash, @@ext)
   end
 
+  # @method edit_from_database
+  # @overload post "/api/edit/:type"
+  # @param type [String] the type of record to edit
+  # @param post-params [Hash] the POST parameters passed with the HTTP request, gets passed as Hash to database
+  # Returns the edited record in selected extension
+  post '/api/edit/:type' do
+    type = params[:type]
+    parameters = clean_extension(params)
+    parameters = Serializer.parse_json_parameters(parameters["json"]) if parameters.has_key? "json"
 
+    # Remove captures, type and splat from outgoing hash
+    parameters.delete("captures")
+    parameters.delete("type")
+    parameters.delete("splat")
+
+    case type
+    when "sell"
+      sell = DBHandler.edit_sell(parameters)
+      if sell.nil? then
+        error_hash = {"error" => "Sell couldn't be found or price wasn't included in parameters."}
+        data_hash = {"error" => error_hash}
+      end
+      data_hash = {"sell" => sell}
+    else
+      error_hash = {"error" => "Invalid data type requested."}
+      data_hash = {"error" => error_hash}
+    end
+
+    Serializer.serialize(data_hash, @@ext)
+  end
 
   # @method verify
   # @param code [String] code to verify account
