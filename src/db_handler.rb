@@ -234,15 +234,14 @@ module DBHandler
 
     token = Token.find_by(email: email)
 
-    if token.nil? or Time.now > token.end_date then
-      # No access token yet, create one
-      token = Token.new do |t|
-        t.email = email
-        t.start_date = Time.now
-        seven_days = 604800
-        t.end_date = Time.now + seven_days
-        t.token = Token.generate_token
+    new_token = Token.make_token(email) if token.nil? or Time.now > token.end_date
+    puts "Token.nil? = #{token.nil?}"
+
+    unless new_token.nil? then
+      unless token.nil? then
+        token.destroy
       end
+      token = new_token
       token.save
     end
 
