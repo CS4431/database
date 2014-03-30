@@ -2,6 +2,7 @@ require 'json'
 require 'sinatra/activerecord'
 require 'sinatra/base'
 require_relative './db_handler'
+require_relative './mailhandler'
 require_relative './serializer'
 
 # Handles all url pattern matching and sends the requested data back to the user. Main entry point of the application.
@@ -230,4 +231,30 @@ class Routes < Sinatra::Base
     end
   end
 
+  # @method contact/buy
+  # Sends an email request to buy a book
+  post '/api/contact/buy' do
+    parameters = clean_extension(params)
+    parameters = Serializer.parse_json_parameters(parameters["json"]) if parameters.has_key? "json"
+
+    if (parameters.has_key?("user_id"))
+      token = {"token" => parameters["user_id"]}
+      if (DBHandler.verify_access_token(token))
+        user_id = DBHandler.convert_token_to_user_id(token)
+        buyer_email = DBHandler.get_user_email(user_id)
+        sell = DBHandler.get_sells({"id" => parameters["sell_id"]}, 1, 0)
+        edition_id = sell[0]['edition_id'] unless sell == []
+        book = DBHandler.get_books({"id" => edition_id}, 1, 0)
+        book_title = book[0]['title'] unless book == []
+        MailHandler.send_buy_request(buyer_email, book_title) if self.class.production?
+        success_hash = {"success" => "Email sent"}
+        data_hash = {"success" => [success_hash]}
+        return Serializer.serialize(data_hash, @@ext)
+      else
+        error_hash = {"error" => "Invalid access token"}
+        data_hash = {"error" => [error_hash]}
+        return Serializer.serialize(data_hash, @@ext)
+      end
+    end
+  end
 end

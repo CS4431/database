@@ -26,4 +26,12 @@ module MailHandler
     MailHandler.send(email, "Account Verification", body)
   end
 
+  # Sends a request to buy a book
+  # @param buyer_email [String] the email of the buyer
+  # @param book_title [String] the title of the book being sold
+  def MailHandler.send_buy_request(buyer_email, book_title)
+    body = "#{buyer_email} is interested in buying #{book_title}. Please contact them to further discuss the sale."
+    MailHandler.send(buyer_email, "Someone wants to buy your book", body)
+  end
+
 end

@@ -180,6 +180,15 @@ module DBHandler
     users_array = [user.to_hash]
   end
 
+  # Get a user's email address
+  #
+  # @param user_id [Integer] the id of the user
+  # @param [String] the user's email address
+  def DBHandler.get_user_email(user_id)
+    user = User.find_by("id" => user_id)
+    user.email
+  end
+
   # Creates a sell request record in the database
   #
   # @param hash [Hash] the sell data to add to the database
