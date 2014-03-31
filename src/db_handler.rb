@@ -42,7 +42,6 @@ module DBHandler
       courses = get_courses({"department_id" => department_id}, 1000, 0)
       return {} if courses.nil?
       hash["course.id"] = courses.collect { |course| course["id"] }
-      puts hash["course.id"]
     end
     editions = Edition.select('edition.*, 
                               edition_group.title,
@@ -297,7 +296,6 @@ module DBHandler
     token = Token.find_by(email: email)
 
     new_token = Token.make_token(email) if token.nil? or Time.now > token.end_date
-    puts "Token.nil? = #{token.nil?}"
 
     unless new_token.nil? then
       unless token.nil? then

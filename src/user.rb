@@ -12,7 +12,6 @@ class User < ActiveRecord::Base
   # @param new_password [String] plaintext password
   def pass=(new_password)
     self.password = Password.create(new_password)
-    puts self.password.encoding
   end
 
   # Checks if password is valid
