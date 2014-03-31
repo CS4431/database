@@ -26,4 +26,9 @@ end
 # database must be set before Routes is initilized
 set :database, {adapter: "sqlite3", database: "db/books.sqlite"}
 
-run RackHandler.new(Routes)
+webrick_options = {
+  :Host => '0.0.0.0',
+  :Port => 4567
+}
+
+Rack::Handler::WEBrick.run(RackHandler.new(Routes), webrick_options)
