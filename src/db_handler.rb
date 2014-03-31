@@ -22,6 +22,12 @@ module DBHandler
                                             database: 'db/books.sqlite')
   end
 
+  # Establish a connection to the test database
+  def DBHandler.establish_test_connection
+    ActiveRecord::Base.establish_connection(adapter: 'sqlite3',
+                                            database: 'db/test.sqlite')
+  end
+
   # Gets multiple books as a hash
   #
   # @param hash [Hash] the book data to search for

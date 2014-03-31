@@ -2,8 +2,11 @@ require 'rake/testtask'
 require 'sinatra/activerecord'
 require_relative 'db/schema'
 require_relative 'src/scraper'
+require_relative 'test/fixtures'
 
 Rake::TestTask.new do |t|
+  DBHandler.establish_test_connection
+  #Fixtures.load
   t.libs << "test"
   t.test_files = FileList['test/test*.rb']
   t.verbose = true
@@ -22,6 +25,14 @@ namespace :db do
   desc "Creates a database based on the defined schema"
   task :create do
     DBHandler.establish_connection
+    Schema.create_db
+  end
+end
+
+namespace :db do
+  desc "Creates a database based on the defined schema"
+  task :createtest do
+    DBHandler.establish_test_connection
     Schema.create_db
   end
 end

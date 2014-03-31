@@ -3,6 +3,7 @@ require 'net/http'
 require 'json'
 require_relative '../src/routes'
 require_relative '../src/db_handler'
+require_relative './fixtures'
 require 'rack/test'
 
 
@@ -11,11 +12,16 @@ class TestAPI < Test::Unit::TestCase
   include Rack::Test::Methods
 
   def app
-    DBHandler.establish_connection
+    DBHandler.establish_test_connection
     routes = Routes
     routes.set :public_folder, 'public'
     routes.set :environment, :test
     routes
+  end
+
+  def setup
+    DBHandler.establish_test_connection
+    Fixtures.load
   end
 
   # Tests that / redirects to the documentation
