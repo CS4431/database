@@ -231,9 +231,9 @@ class Routes < Sinatra::Base
     end
   end
 
-  # @method contact/buy
+  # @method contact/sell
   # Sends an email request to buy a book
-  post '/api/contact/buy' do
+  post '/api/contact/sell' do
     parameters = clean_extension(params)
     parameters = Serializer.parse_json_parameters(parameters["json"]) if parameters.has_key? "json"
 
