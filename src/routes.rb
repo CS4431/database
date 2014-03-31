@@ -211,6 +211,18 @@ class Routes < Sinatra::Base
         data_hash = {"error" => error_hash}
       end
       data_hash = {"sell" => sell}
+    when "password"
+      # Check for required parameters
+      if (!parameters.has_key?("email") or
+        !parameters.has_key?("currentpassword") or
+        !parameters.has_key?("newpassword")) then
+        data_hash = {"error" => "Email/currentpassword/newpassword not included."}
+      else
+        result = DBHandler.change_password(parameters["email"],
+          parameters["currentpassword"],
+          parameters["newpassword"])
+        data_hash = {"result" => result}
+      end
     else
       error_hash = {"error" => "Invalid data type requested."}
       data_hash = {"error" => error_hash}
