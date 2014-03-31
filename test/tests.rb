@@ -6,11 +6,11 @@ require_relative '../src/db_handler'
 require_relative './fixtures'
 require 'rack/test'
 
-
 # Main class for running unit tests
 class TestAPI < Test::Unit::TestCase
   include Rack::Test::Methods
 
+  # Sets up the Routes app to be run
   def app
     DBHandler.establish_test_connection
     routes = Routes
@@ -19,6 +19,7 @@ class TestAPI < Test::Unit::TestCase
     routes
   end
 
+  # Code to run before each test
   def setup
     DBHandler.establish_test_connection
     Fixtures.load
@@ -39,26 +40,28 @@ class TestAPI < Test::Unit::TestCase
     assert last_response.ok?
     data = JSON.parse(last_response.body)
     assert_equal(1, data[0]["data"]["id"])
-  # @note Ensure you pass ext=<serialized type> in get parameters to specify your return format!
   end
 
   # Tests that a user gets created fine
   def test_create_user
-  	params = {"email" => "foo@lakeheadu.ca", "password" => "foo", "ext" => "json"}
+  	params = {"email" => "foo@lakeheadu.ca", "password" => "foo"}
     post 'api/create/user', params
-    puts last_response.status
     assert_equal(last_response.status.to_i, 200)
-    end
+  end
 
   # Tests that a user can login
   def test_login
-    # Create user first
-    params = {"email" => "foo@lakeheadu.ca", "password" => "foo", "verified" => "true", "ext" => "json"}
-    post '/api/create/user', params
-
-    params = {"email" => "foo@lakeheadu.ca", "password" => "foo", "ext" => "json"}
+    params = {"email" => "user1@lakeheadu.ca", "password" => "password"}
     post '/api/login', params
-
     assert_equal(last_response.status.to_i, 200)
   end
+
+  # Tests that you can get mutiple sells at a time
+  def test_get_multiple_sells
+    params = {"count" => 10}
+    post '/api/sell', params
+    data = JSON.parse(last_response.body)
+    assert(data.length > 1)
+  end
+
 end
