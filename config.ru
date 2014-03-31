@@ -10,6 +10,8 @@ class RackHandler
   # @param app [Sinatra::Base] the application
   def initialize(app)
     @app = app
+    @app.set :public_folder, 'public'
+    @app.set :environment, :development
   end
 
   # Handles a user request
@@ -21,10 +23,7 @@ class RackHandler
   end
 end
 
-set :bind, '0.0.0.0'
-set :env, :development
-set :port, 4567
+# database must be set before Routes is initilized
 set :database, {adapter: "sqlite3", database: "db/books.sqlite"}
-set :run, false
 
 run RackHandler.new(Routes)
