@@ -250,7 +250,24 @@ module DBHandler
   def DBHandler.login(email, password)
     user = User.find_by(email: email)
     return false if user.nil?
-    user.login(password)
+    res = user.login(password)
+    return res
+  end
+
+  # Changes a user's password
+  #
+  # @param email [String] the user's email
+  # @param currentpassword [String] the user's current password
+  # @param newpassword [String] the new password
+  # @return [Boolean] result of the transaction with db
+  def DBHandler.change_password(email, currentpassword, newpassword)
+    if DBHandler.login(email, currentpassword) then
+      user = User.find_by(email: email)
+      user.pass = newpassword
+      user.save
+      return true
+    end
+    return false
   end
 
   # Creates an access token for a given email and then returns it
