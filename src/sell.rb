@@ -6,13 +6,13 @@ class Sell < ActiveRecord::Base
   validates :user_id, presence: true
   validates :edition_id, presence: true
   validates :price, presence: true
-  @@expire_days = 30
+  @@expire_days = 30 * 86400
 
   # Creates new Sell object with 30 day expiry
   def Sell.new_with_dates(hash)
     sell = Sell.new(hash)
     sell.start_date = Time.now
-    sell.end_date = Time.now + @@expire_days.days
+    sell.end_date = Time.now + @@expire_days
     sell.save
     sell
   end
