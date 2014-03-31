@@ -156,7 +156,19 @@ module DBHandler
   # @param offset [Integer] how many sells to offset the search results by
   # @return [Array of Hashes] the sell data, empty hash if no sells found
   def DBHandler.get_sells(hash = {}, count, offset)
-    sells = Sell.where(hash).limit(count).offset(offset)
+    if hash.has_key?('department_id')
+      hash['course.department_id'] = hash.delete('department_id')
+      sells = Sell.select('sell.*')
+        .references(:edition, :course, :course_book)
+        .joins('INNER JOIN edition ON sell.edition_id = edition.id')
+        .joins('INNER JOIN course_book ON edition.id = course_book.edition_id')
+        .joins('INNER JOIN course ON course.id = course_book.course_id')
+        .where(hash)
+        .limit(count)
+        .offset(offset)
+    else
+      sells = Sell.where(hash).limit(count).offset(offset)
+    end
     return {} if sells.nil?
     sells_array = sells.to_a.map(&:serializable_hash)
   end
