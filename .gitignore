@@ -15,7 +15,7 @@
 /_yardoc/
 /doc/
 /rdoc/
-/public/doc
+public
 
 ## Environment normalisation:
 /.bundle/
@@ -32,3 +32,6 @@ Gemfile.lock
 
 # log files
 *.log
+
+# database files
+db/*.sqlite
