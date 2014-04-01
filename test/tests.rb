@@ -64,4 +64,14 @@ class TestAPI < Test::Unit::TestCase
     assert(data.length > 1)
   end
 
+  # Tests that you cannot create a user using with an existing email address
+  def test_emails_should_be_unique
+    params = { 'email' => 'foo@lakeheadu.ca', 'password' => 'foo'}
+    post 'api/create/user', params
+    data = JSON.parse(last_response.body)
+    assert data[0]['data']['id'] != nil
+    post 'api/create/user', params
+    data = JSON.parse(last_response.body)
+    assert data[0]['kind'] == 'error'
+  end
 end

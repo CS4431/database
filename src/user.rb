@@ -4,7 +4,7 @@ require 'bcrypt'
 class User < ActiveRecord::Base
   include BCrypt
   self.table_name = "user"
-  validates :email, presence: true
+  validates :email, presence: true, uniqueness: true
   validates :password, presence: true
 
   # Sets and hashes the user's password
