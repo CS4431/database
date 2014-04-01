@@ -152,12 +152,12 @@ class Routes < Sinatra::Base
       parameters['email'] = URI.unescape(parameters['email'])
       parameters['password'] = URI.unescape(parameters['password'])
       user = DBHandler.create_user(parameters, self.class.production?)
-      if user[0]['id'] != nil
-        data_hash = {"user" => user}
+      if user[0]['error'] == nil
+        kind = 'user'
       else
-        error_hash = {"error" => "Email already exists"}
-        data_hash = {"error" => error_hash}
+        kind = 'error'
       end
+      data_hash = { kind => user }
     else
       error_hash = {"error" => "Invalid data type requested."}
       data_hash = {"error" => error_hash}    

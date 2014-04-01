@@ -194,7 +194,15 @@ module DBHandler
     verification = Verification.generate(user.id)
     MailHandler.send_verification(user.email, verification.code) if send_email
 
-    users_array = [user.to_hash]
+    if user.errors.messages.length == 0
+      return [user.to_hash]
+    else
+      errors = {}
+      user.errors.messages.each_value do |v|
+        errors['error'] = v
+      end
+      return [errors]
+    end
   end
 
   # Get a user's email address

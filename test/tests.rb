@@ -74,4 +74,11 @@ class TestAPI < Test::Unit::TestCase
     data = JSON.parse(last_response.body)
     assert data[0]['kind'] == 'error'
   end
+
+  def test_only_lakeheadu_emails_accepted
+    params = { 'email' => 'foo@notlakeheadu.ca', 'password' => 'foo'}
+    post 'api/create/user', params
+    data = JSON.parse(last_response.body)
+    assert data[0]['kind'] == 'error'
+  end
 end
