@@ -1,3 +1,4 @@
+require 'i18n'
 require 'json'
 require 'sinatra/activerecord'
 require 'sinatra/base'
@@ -8,6 +9,7 @@ require_relative './serializer'
 # Handles all url pattern matching and sends the requested data back to the user. Main entry point of the application.
 class Routes < Sinatra::Base
   @extensions = Serializer::EXTENSIONS
+  I18n.enforce_available_locales = false
 
   # Checks for existence of the ext get parameter and assigns it to a class variable
   # @param p [Hash] the parameters hash
