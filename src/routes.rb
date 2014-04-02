@@ -81,6 +81,17 @@ class Routes < Sinatra::Base
     parameters.delete("type")
     parameters.delete("splat")
   
+    if (parameters.has_key?("user_id"))
+      token = {"token" => parameters["user_id"]}
+      if (DBHandler.verify_access_token(token))
+        parameters["user_id"] = DBHandler.convert_token_to_user_id(token)
+      else
+        error_hash = {"error" => "Invalid access token"}
+        data_hash = {"error" => error_hash}
+        return Serializer.serialize(data_hash, @@ext)
+      end
+    end
+
     case type
     when "book"
       books = DBHandler.get_books(parameters, count, offset)
