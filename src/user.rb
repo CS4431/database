@@ -28,7 +28,6 @@ class User < ActiveRecord::Base
   # Returns User data (id, email) as a hash
   def to_hash
     hash = {
-      "id" => id,
       "email" => email }
   end
 end
