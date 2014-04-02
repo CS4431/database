@@ -20,7 +20,7 @@ class Token < ActiveRecord::Base
       t.email = email
       t.start_date = Time.now
       seven_days = 604800
-      t.end_date = Time.now + 60
+      t.end_date = Time.now + seven_days
       t.token = Token.generate_uuid
     end
   end
