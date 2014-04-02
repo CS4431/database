@@ -69,7 +69,7 @@ class TestAPI < Test::Unit::TestCase
     params = { 'email' => 'foo@lakeheadu.ca', 'password' => 'foo'}
     post 'api/create/user', params
     data = JSON.parse(last_response.body)
-    assert data[0]['data']['id'] != nil
+    assert_equal 'foo@lakeheadu.ca', data[0]['data']['email']
     post 'api/create/user', params
     data = JSON.parse(last_response.body)
     assert data[0]['kind'] == 'error'
