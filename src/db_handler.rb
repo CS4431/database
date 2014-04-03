@@ -12,6 +12,7 @@ require_relative './sell'
 require_relative './user'
 require_relative './verification'
 require_relative './token'
+require_relative './search'
 
 # Handles all database connections
 module DBHandler
@@ -343,5 +344,23 @@ module DBHandler
                    "course" => Course.count,
                    "department" => Department.count,
                    "sell" => Sell.count}]
+  end
+
+  # Searches for a record in all applicable fields of the table provided
+  # @param search_string [String] parameter to search for
+  # @param table [Hash] hash with table & field information
+  # @return [Array of Hashes] the books found
+  def DBHandler.search(search_string, table)
+    search_string.downcase!
+    find = ""
+    table[:fields].each { |f|
+      # LOWER() changes everything to downcase
+      find << "LOWER(#{f}) LIKE '%#{search_string}%' OR "
+    }
+    find.chomp!(" OR ")
+    puts "Debug! find: #{find}"
+    result = table[:table].where(find)
+    {} if result.nil?
+    result.to_a.map(&:serializable_hash)
   end
 end

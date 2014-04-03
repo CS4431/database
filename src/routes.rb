@@ -5,6 +5,7 @@ require 'sinatra/base'
 require_relative './db_handler'
 require_relative './mailhandler'
 require_relative './serializer'
+require_relative './search'
 
 # Handles all url pattern matching and sends the requested data back to the user. Main entry point of the application.
 class Routes < Sinatra::Base
@@ -261,6 +262,40 @@ class Routes < Sinatra::Base
       data_hash = {"error" => error_hash}
     end
 
+    Serializer.serialize(data_hash, @@ext)
+  end
+
+  # @method search
+  # @overload post '/api/search/:type'
+  # @param type [String] The type of record to search
+  # @param post-params [Hash] Post parameters
+  # Returns a list of entries matching the passed string to search for using LIKE *foo*
+  post '/api/search/:type' do
+    type = params[:type]
+    parameters = clean_extension(params)
+    parameters = Serializer.parse_json_parameters(parameters["json"]) if parameters.has_key? "json"
+
+    # Remove captures, type and splat from outgoing hash
+    parameters.delete("captures")
+    parameters.delete("type")
+    parameters.delete("splat")
+
+    search_string = params["searchstring"]
+
+    case type
+    when "book"
+      books = DBHandler.search(search_string, Search.tables[:book])
+      data_hash = {"book" => books}
+    when "course"
+      courses = DBHandler.search(search_string, Search.tables[:course])
+      data_hash = {"course" => courses}
+    when "department"
+      departments = DBHandler.search(search_string, Search.tables[:department])
+      data_hash = {"department" => departments}
+    else
+      error = "Invalid data type requested."
+      data_hash = {"error" => error}
+    end
     Serializer.serialize(data_hash, @@ext)
   end
 
