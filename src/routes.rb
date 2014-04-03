@@ -162,8 +162,8 @@ class Routes < Sinatra::Base
       sells = DBHandler.create_sell(parameters)
       data_hash = {"sell" => sells}
     when "user"
-      parameters['email'] = URI.unescape(parameters['email'])
-      parameters['password'] = URI.unescape(parameters['password'])
+      parameters['email'] = URI.unescape(parameters['email']) if parameters.has_key?('email')
+      parameters['password'] = URI.unescape(parameters['password']) if parameters.has_key?('password')
       user = DBHandler.create_user(parameters, self.class.production?)
       if user[0]['error'] == nil
         kind = 'user'

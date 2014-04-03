@@ -30,4 +30,10 @@ class TestUser < SinatraTest
     assert_equal('error', data[0]['kind'])
   end
 
+  # tests that sending no post parameters will return an error
+  def test_send_no_parameters_returns_error
+    data = post_create_user({})
+    assert_equal('error', data[0]['kind'])
+  end
+
 end
