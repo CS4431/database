@@ -62,4 +62,11 @@ class TestBook < SinatraTest
     assert_equal('http://www.example.com/images/books/calculus.jpg',
                  data[0]['data']['image'])
   end
+
+  # tests that a book will return a value of nil for it's image
+  def test_book_with_no_image_returns_nil_for_image
+    data = post_book({'id' => 3})
+    assert_equal(nil, data[0]['data']['image'])
+  end
+
 end

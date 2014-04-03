@@ -62,6 +62,12 @@ module Fixtures
                                'image' => 'http://www.example.com/images/books/calculus.jpg'})
     CourseBook.create({'id' => 2, 'course_id' => math1171.id, 'edition_id' => calculus.id})
 
+    calculusSolutionGroup = EditionGroup.create({'id' => 3, 'title' => 'Calculus: One And Several Variables Ssm'})
+    calculusSolutions = Edition.create({'id' => 3, 'isbn' => '040105534',
+                               'author' => 'Salas, Satunio', 'publisher' => 'Wiley',
+                               'edition' => 10, 'edition_group_id' => calculusGroup.id})
+    CourseBook.create({'id' => 3, 'course_id' => math1171.id, 'edition_id' => calculusSolutions.id})
+
     # Users
     user1 = User.create({'id' => 1, 'email' => 'user1@lakeheadu.ca',
                          'password' => '$2a$10$cM5Rrhwjvhd.XvTnLyYw6.5loWOc4Usm6sUjPZ3Js0fcrZOdeC5L2',

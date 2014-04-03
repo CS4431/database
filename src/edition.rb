@@ -7,6 +7,7 @@ class Edition < ActiveRecord::Base
 
   # Converts the image uri into a full path uri if it refers to a local image
   def full_image_uri
+    return nil if image.nil?
     return image if image.start_with?('http://')
     return 'http://bookmarket.webhop.org/' + image
   end
