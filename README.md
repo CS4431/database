@@ -5,7 +5,7 @@ Database Team
     git clone https://github.com/CS4431/database/
     cd database
     bundle install
-    rackup -p 4567
+    rackup
     
 That will start the Sinatra web server and will start intercepting API requests.
 
