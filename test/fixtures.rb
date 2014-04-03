@@ -81,6 +81,12 @@ module Fixtures
                  'edition_id' => cProgram.id, 'price' => 60,
                  'start_date' => Time.now, 'end_date' => (Time.now + (30 * 86400))})
     Sell.create({'id' => 2, 'user_id' => user1.id,
+                 'edition_id' => cProgram.id, 'price' => 60,
+                 'start_date' => Time.now, 'end_date' => (Time.now + (30 * 86400))})
+    Sell.create({'id' => 3, 'user_id' => user2.id,
+                 'edition_id' => cProgram.id, 'price' => 70,
+                 'start_date' => Time.now, 'end_date' => (Time.now + (30 * 86400))})
+    Sell.create({'id' => 4, 'user_id' => user1.id,
                  'edition_id' => calculus.id, 'price' => 80,
                  'start_date' => Time.now, 'end_date' => (Time.now + (30 * 86400))})
 
