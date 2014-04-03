@@ -68,7 +68,7 @@ class Routes < Sinatra::Base
   end
 
   # @method select_from_database
-  # @overload get "/api/:type"
+  # @overload post "/api/:type"
   # @param type [String] The type of record being fetched
   # @param post-params [Hash] the POST parameters passed with the HTTP request, gets passed as Hash to database
   # Returns the record you're searching for or returns empty hash in JSON/XML
