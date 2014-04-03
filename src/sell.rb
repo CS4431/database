@@ -21,7 +21,6 @@ class Sell < ActiveRecord::Base
   def to_hash
     hash = {
       "id" => id,
-      "user_id" => user_id,
       "edition_id" => edition_id,
       "price" => price,
       "start_date" => start_date,
