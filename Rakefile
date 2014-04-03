@@ -6,7 +6,6 @@ require_relative 'test/fixtures'
 
 Rake::TestTask.new do |t|
   DBHandler.establish_test_connection
-  #Fixtures.load
   t.libs << "test"
   t.test_files = FileList['test/test*.rb']
   t.verbose = true

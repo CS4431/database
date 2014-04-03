@@ -62,11 +62,19 @@ module Fixtures
 
     # Users
     user1 = User.create({'id' => 1, 'email' => 'user1@lakeheadu.ca',
-                         'password' => '$2a$10$yHMWvRkay6QdxA9WEv2y2u7L3/q8iPf8V.WA4UNTv4tnKF/RXs3ey',
+                         'password' => '$2a$10$cM5Rrhwjvhd.XvTnLyYw6.5loWOc4Usm6sUjPZ3Js0fcrZOdeC5L2',
                          'verified' => true})
     user2 = User.create({'id' => 2, 'email' => 'user2@lakeheadu.ca',
                          'password' => '$2a$10$UJgoJv.8x0zvCqZEoIzJ3uqGTtqPWjKXtCoO85I2YKyoRugxikBtO',
                          'verified' => false})
+
+    # Tokens
+    token1 = Token.create({'id' => 1, 'email' => user1.email,
+                           'token' => 'abcd', 'start_date' => Time.now - 10,
+                           'end_date' => Time.now + 1000})
+    token2 = Token.create({'id' => 2, 'email' => user2.email,
+                           'token' => 'efgh', 'start_date' => Time.now - 100,
+                           'end_date' => Time.now - 10})
 
     # Sells
     Sell.create({'id' => 1, 'user_id' => user1.id,
