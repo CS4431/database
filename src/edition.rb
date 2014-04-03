@@ -5,6 +5,12 @@ class Edition < ActiveRecord::Base
   validates :isbn, presence: true
   validates :edition_group_id, presence: true
 
+  # Converts the image uri into a full path uri if it refers to a local image
+  def full_image_uri
+    return image if image.start_with?('http://')
+    return 'http://bookmarket.webhop.org/' + image
+  end
+
   # Returns Edition data as a hash
   def to_hash
     hash = {
@@ -15,6 +21,6 @@ class Edition < ActiveRecord::Base
       "edition" => edition,
       "publisher" => publisher,
       "cover" => cover,
-      "image" => image }
+      "image" => full_image_uri }
   end
 end

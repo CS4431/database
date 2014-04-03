@@ -51,13 +51,15 @@ module Fixtures
     cProgram = Edition.create({'id' => 1, 'isbn' => '9780132990448',
                                'author' => 'Deitel, Paul', 'publisher' => 'Pearson Education',
                                'edition' => '7', 'cover' => 'paperback',
-                               'edition_group_id' => cProgramGroup.id})
+                               'edition_group_id' => cProgramGroup.id,
+                               'image' => 'images/book/9780132990448.jpg'})
     CourseBook.create({'id' => 1, 'course_id' => comp1411.id, 'edition_id' => cProgram.id})
 
     calculusGroup = EditionGroup.create({'id' => 2, 'title' => 'Calculus: One And Several Variables'})
     calculus = Edition.create({'id' => 2, 'isbn' => '9780471698043',
                                'author' => 'Salas, Satunio', 'publisher' => 'Wiley',
-                               'edition' => 10, 'edition_group_id' => calculusGroup.id})
+                               'edition' => 10, 'edition_group_id' => calculusGroup.id,
+                               'image' => 'http://www.example.com/images/books/calculus.jpg'})
     CourseBook.create({'id' => 2, 'course_id' => math1171.id, 'edition_id' => calculus.id})
 
     # Users

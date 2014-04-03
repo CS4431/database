@@ -49,4 +49,17 @@ class TestBook < SinatraTest
     assert(data[0]['data'].has_key?('for_sale'))
   end 
 
+  # tests that local book images will return the full uri
+  def test_local_images_converted_to_full_uri
+    data = post_book({'id' => 1})
+    assert_equal('http://bookmarket.webhop.org/images/book/9780132990448.jpg',
+                 data[0]['data']['image'])
+  end
+
+  # tests that foreign images will not be converted to use server's address
+  def test_foreign_images_will_not_be_converted
+    data = post_book({'id' => 2})
+    assert_equal('http://www.example.com/images/books/calculus.jpg',
+                 data[0]['data']['image'])
+  end
 end

@@ -56,6 +56,10 @@ module DBHandler
       offset(offset)
 
     {} if editions.nil?
+    editions.each do |edition|
+      edition.image = edition.full_image_uri
+    end
+
     editions_array = editions.to_a.map(&:serializable_hash)
     # count the number of each edition that is for sale
     editions_array.each do |edition|
