@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   self.table_name = "user"
   validates :email, presence: { is: true, message: "Email is missing" },
                     uniqueness: { is: true, message: "Email already exists" },
-                    format: { with: /\.*@lakeheadu.ca/, message: "Only lakeheadu.ca emails are accepted" }
+                    format: { with: /.*@lakeheadu.ca/, message: "Only lakeheadu.ca emails are accepted" }
   validates :password, presence: true
 
   # Sets and hashes the user's password
