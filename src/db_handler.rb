@@ -365,6 +365,15 @@ module DBHandler
     puts "Debug! find: #{find}"
     result = table[:table].where(find)
     {} if result.nil?
+
+    if table[:table] == EditionGroup
+      edition_group_ids = []
+      result.each do |edition_group|
+        edition_group_ids << edition_group.id
+      end
+      return DBHandler.get_books({'edition_group_id' => edition_group_ids}, 1000, 0)
+    end
+
     result.to_a.map(&:serializable_hash)
   end
 end
