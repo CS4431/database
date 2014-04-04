@@ -101,7 +101,6 @@ module Scraper
             link = line.child['href']
             # remove \n from links
             link.gsub!("\n", "")
-            puts link
             course_hash["books_link"] = link
             courses << course_hash
             course_hash = Hash.new
@@ -117,7 +116,7 @@ module Scraper
                 "section" => course["code"][10,2],
                 "department_id" => program_id,
                 "instructor" => course["instructor"],
-                "term" => term + course["code"][10] }
+                "term" => term.to_s + course["code"][10] }
         db_data = DBHandler.create_course(data)
         Scraper.get_all_books(course["books_link"], db_data["id"]) 
       end
