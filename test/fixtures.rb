@@ -13,8 +13,10 @@ require_relative '../src/user'
 require_relative '../src/verification'
 require_relative '../src/token'
 
+# Fixtures to load into the test database during testing
 module Fixtures
 
+  # deletes all data in the database
   def self.delete_all
     Buy.delete_all
     Contact.delete_all
@@ -29,6 +31,7 @@ module Fixtures
     Token.delete_all
   end
 
+  # loads the fixtures into the database
   def self.load
     self.delete_all
 

@@ -185,8 +185,7 @@ module DBHandler
   
   # Creates a user and salts and hashes the password
   #
-  # @param email [String] the user's email
-  # @param password [String] the user's plaintext password
+  # @param hash [Hash] the user's information to add. Contatins email and password
   # @param send_email [Boolean] should the server send an email for verification
   # @return [Integer] the created user's account id
   def DBHandler.create_user(hash, send_email)
@@ -213,7 +212,7 @@ module DBHandler
   # Get a user's email address
   #
   # @param user_id [Integer] the id of the user
-  # @param [String] the user's email address
+  # @return [String] the user's email address
   def DBHandler.get_user_email(user_id)
     user = User.find_by("id" => user_id)
     user.email

@@ -46,6 +46,7 @@ class TestCourse < SinatraTest
     assert_equal(2, data.length)
   end
 
+  # tests that you can offset course search results
   def test_get_course_offset
     data = post_course({'count' => 1, 'offset' => 1})
     assert_equal(2, data[0]['data']['id'])

@@ -1,5 +1,6 @@
 require_relative './sinatra_test'
 
+# Unit tests for book routes
 class TestBook < SinatraTest
   # perform a post to the api/book route
   # @param params [Hash] parameters to post

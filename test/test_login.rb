@@ -1,5 +1,6 @@
 require_relative './sinatra_test'
 
+# Unit tests for testing login routes
 class TestLogin < SinatraTest
   # tests that using a valid token will work
   def test_valid_token

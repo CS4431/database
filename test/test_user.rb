@@ -1,5 +1,6 @@
 require_relative './sinatra_test'
 
+# Tests user routes
 class TestUser < SinatraTest
   # perform a post to the api/create/user route
   # @param params [Hash] parameters to post
@@ -9,11 +10,18 @@ class TestUser < SinatraTest
     JSON.parse last_response.body
   end
   
-  # tests that creating an email will return the email back on success
+  # tests that creating a user will return the email back on success
   def test_create_user_returns_email
     data = post_create_user({'email' => 'newuser@lakeheadu.ca',
                              'password' => 'password'})
     assert_equal('newuser@lakeheadu.ca', data[0]['data']['email'])
+  end
+
+  # tests that creating a user won't return the password back
+  def test_create_user_doesnt_return_password
+    data = post_create_user({'email' => 'newuser@lakeheadu.ca',
+                             'password' => 'password'})
+    assert(!data[0]['data'].has_key?('password'))
   end
 
   # tests that multiple accounts cannot be created for the same email

@@ -1,4 +1,4 @@
-# Handels course_book database table
+# Handles course_book database table
 class CourseBook < ActiveRecord::Base
   self.table_name = "course_book"
   validates :course_id, presence: true

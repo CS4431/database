@@ -1,5 +1,6 @@
 require_relative './sinatra_test'
 
+# Tests sell routes
 class TestSell < SinatraTest
 
   # tests that a user can delete their own sells

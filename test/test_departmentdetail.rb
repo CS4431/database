@@ -1,5 +1,6 @@
 require_relative './sinatra_test'
 
+# Test department detail routes
 class TestDepartmentDetail < SinatraTest
   # perform a post to the api/departmentdetail route
   # @param params [Hash] parameters to post
