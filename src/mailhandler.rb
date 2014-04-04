@@ -22,7 +22,7 @@ module MailHandler
   # @param email [String] email address to send verification to
   # @param code [String] verification code to send
   def MailHandler.send_verification(email, code)
-    body = "To verify you account please follow this link: http://bookmarket.webhop.org:4567/verify/#{code}"
+    body = "To verify you account please follow this link: http://bookmarket.webhop.org:4567/api/verify/#{code}"
     MailHandler.send(email, "Account Verification", body)
   end
 
