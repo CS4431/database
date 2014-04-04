@@ -361,7 +361,6 @@ module DBHandler
       find << "LOWER(#{f}) LIKE '%#{search_string}%' OR "
     }
     find.chomp!(" OR ")
-    puts "Debug! find: #{find}"
     result = table[:table].where(find)
     {} if result.nil?
 
