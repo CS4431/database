@@ -11,7 +11,6 @@ class RackHandler
   def initialize(app)
     @app = app
     @app.set :public_folder, 'public'
-    @app.set :environment, :development
   end
 
   # Handles a user request
