@@ -11,7 +11,6 @@ class SinatraTest < Test::Unit::TestCase
   
   # Sets up the Routes app to be run
   def app
-    DBHandler.establish_test_connection
     routes = Routes
     routes.set :public_folder, 'public'
     routes.set :environment, :test

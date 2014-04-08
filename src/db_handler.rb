@@ -19,14 +19,14 @@ module DBHandler
   
   # Establish a connection to the database. Used to connect to the database when the server is not running (ie. using irb)
   def DBHandler.establish_connection
-    ActiveRecord::Base.establish_connection(adapter: 'sqlite3',
-                                            database: 'db/books.sqlite')
+    db_config = YAML::load(File.open('db/config.yml'))
+    ActiveRecord::Base.establish_connection(db_config)
   end
 
   # Establish a connection to the test database
   def DBHandler.establish_test_connection
-    ActiveRecord::Base.establish_connection(adapter: 'sqlite3',
-                                            database: 'db/test.sqlite')
+    db_config = YAML::load(File.open('db/config.yml'))
+    ActiveRecord::Base.establish_connection(db_config['test'])
   end
 
   # Gets multiple books as a hash

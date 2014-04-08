@@ -23,7 +23,8 @@ class RackHandler
 end
 
 # database must be set before Routes is initilized
-set :database, {adapter: "sqlite3", database: "db/books.sqlite"}
+#set :database, {adapter: "sqlite3", database: "db/books.sqlite"}
+set :database_file, 'db/config.yml'
 
 webrick_options = {
   :Host => '0.0.0.0',
