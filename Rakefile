@@ -4,6 +4,8 @@ require_relative 'db/schema'
 require_relative 'src/scraper'
 require_relative 'test/fixtures'
 
+task :default => [:test]
+
 Rake::TestTask.new do |t|
   DBHandler.establish_test_connection
   t.libs << "test"
