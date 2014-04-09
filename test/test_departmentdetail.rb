@@ -12,13 +12,13 @@ class TestDepartmentDetail < SinatraTest
 
   # tests that departmentdetail return the correct 'kind'
   def test_get_departmentdetail_kind
-    data = post_departmentdetail({'id' => 1})
+    data = post_departmentdetail('id' => 1)
     assert_equal('department_courses', data[0]['kind'])
   end
 
   # tests that the courses for the department are returned
   def test_return_courses
-    data = post_departmentdetail({'id' => 1})
+    data = post_departmentdetail('id' => 1)
     courses = data[0]['data']['courses']
     assert_equal(1, courses[0]['department_id'])
   end

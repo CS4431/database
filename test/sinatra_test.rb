@@ -8,7 +8,7 @@ require_relative './fixtures'
 # Main class for running unit tests
 class SinatraTest < Test::Unit::TestCase
   include Rack::Test::Methods
-  
+
   # Sets up the Routes app to be run
   def app
     routes = Routes

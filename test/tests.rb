@@ -7,12 +7,4 @@ class TestAPI < SinatraTest
     assert last_response.ok?
     assert_equal 'http://example.org/doc/index.html', last_request.url
   end
-
-  # Tests that you can get mutiple sells at a time
-  def test_get_multiple_sells
-    params = {"count" => 10}
-    post '/api/sell', params
-    data = JSON.parse(last_response.body)
-    assert(data.length > 1)
-  end
 end
