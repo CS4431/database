@@ -4,6 +4,7 @@ require_relative './sinatra_test'
 class TestSell < SinatraTest
   # tests that a user can delete their own sells
   def test_can_delete_own_sell
+    @db_modified = true
     params = { 'user_id' => 'abcd', 'id' => 1 }
     post 'api/delete/sell', params
     data = JSON.parse(last_response.body)

@@ -28,6 +28,7 @@ class TestLogin < SinatraTest
 
   # tests that logging in will return a token
   def test_login_returns_token
+    @db_modified = true
     params = { 'email' => 'user1@lakeheadu.ca',
                'password' => 'password' }
     post 'api/login', params

@@ -8,6 +8,7 @@ require_relative './fixtures'
 # Main class for running unit tests
 class SinatraTest < Test::Unit::TestCase
   include Rack::Test::Methods
+  @db_modified = false
 
   # Sets up the Routes app to be run
   def app
@@ -20,6 +21,13 @@ class SinatraTest < Test::Unit::TestCase
   # Code to run before each test
   def setup
     DBHandler.establish_test_connection
-    Fixtures.load
   end
+
+  def teardown
+    if @db_modified
+      Fixtures.load
+      @db_modified = false
+    end
+  end
+
 end
